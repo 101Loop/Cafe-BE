@@ -5,8 +5,9 @@ CUSTOM_APPS = [
     'rest_framework',
     'drfaddons',
     'restaurant.apps.RestaurantConfig',
+    'billing.apps.BillingConfig',
     'offers.apps.OffersConfig',
-    # 'users.apps.UsersConfig',
+    'users.apps.UsersConfig',
 ]
 
 AUTHENTICATION_BACKENDS = ['users.auth.MultiFieldModelBackend',
@@ -36,7 +37,7 @@ REST_FRAMEWORK = {
 
 }
 
-# AUTH_USER_MODEL = 'users.User'
+AUTH_USER_MODEL = 'users.User'
 
 JWT_AUTH = {
     'JWT_ENCODE_HANDLER': 'rest_framework_jwt.utils.jwt_encode_handler',

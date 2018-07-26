@@ -7,7 +7,7 @@ class Offer(models.Model):
     facebook = models.TextField(_('Facebook'))
     instagram = models.TextField(_('Instagram'))
     date = models.DateField(_('Date'))
-    verify = models.BooleanField()
+    verify = models.BooleanField(_('Verify'))
 
     class Meta:
         verbose_name = _('Offer')

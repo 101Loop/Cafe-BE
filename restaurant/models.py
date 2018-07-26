@@ -6,28 +6,74 @@ from drfaddons.models import CreateUpdateModel
 class Tag(models.Model):
     tag = models.CharField(_('Tag'), max_length=254)
 
+    def __str__(self):
+        return self.tag
+
     class Meta:
         verbose_name = _('Tag')
         verbose_name_plural = _('Tags')
 
 
-class Menu(models.Model):
+class Item(CreateUpdateModel):
     category = models.CharField(_('Category'), max_length=254, choices=[('V', 'Veg'), ('N', 'Non-Veg'), ('J', 'Jain')])
-    name = models.CharField(_('Name'), max_length=254, blank=True, null=True)
-    email = models.EmailField(_('EMail Address'))
-    mobile = models.CharField(_('Mobile Number'), max_length=150)
-    image = models.URLField(_('Image URL'), max_length=254)
-    tags = models.ForeignKey(Tag, on_delete=models.PROTECT)
+    name = models.CharField(_('Name'), max_length=254, unique=True)
+    price = models.DecimalField(_('Item Price'), max_digits=10, decimal_places=3)
+    image = models.URLField(_('Image URL'), max_length=254, null=True)
+    tags = models.ManyToManyField(Tag)
+    hsn = models.CharField(_('HSN (GST)'), null=True, max_length=20)
+    desc = models.TextField(_('Description'), null=True)
+    gst = models.DecimalField(_('GST Percentage'), max_digits=5, decimal_places=2, default=5.00)
+    gst_inclusive = models.BooleanField(_('GST Inclusive?'), default=True)
+
+    @property
+    def item_price(self):
+        if self.gst_inclusive:
+            return self.price/(1+(self.gst/100))
+        else:
+            return self.price
+
+    @property
+    def total_price(self):
+        if self.gst_inclusive:
+            return self.price
+        else:
+            return self.price*(1 + (self.gst/100))
+
+    def __str__(self):
+        return self.name
 
     class Meta:
-        verbose_name = _('Menu')
-        verbose_name_plural = _('Menu')
+        verbose_name = _('Item')
+        verbose_name_plural = _('Items')
 
 
-class Payment(CreateUpdateModel):
-    price = models.FloatField(_('Price'), blank=False, null=False)
-    date = models.DateField(_('Date'))
+class LunchPack(CreateUpdateModel):
+    name = models.CharField(_('Name'), max_length=254, unique=True)
+    price = models.DecimalField(_('Item Price'), max_digits=10, decimal_places=3)
+    category = models.CharField(_('Category'), max_length=254, choices=[('V', 'Veg'), ('N', 'Non-Veg'), ('J', 'Jain')])
+    items = models.ManyToManyField(Item)
+
+    def __str__(self):
+        return self.name
 
     class Meta:
-        verbose_name = _('Payment')
+        verbose_name = _('Lunch Pack')
+        verbose_name_plural = _('Lunch Packs')
 
+
+class Store(CreateUpdateModel):
+    from django.contrib.auth import get_user_model
+
+    name = models.CharField(_('Store Name'), max_length=254, unique=True)
+    mobile = models.CharField(_('Mobile Number'), max_length=15, null=True)
+    landline = models.CharField(_('Landline Number'), max_length=20, null=True)
+    address = models.TextField(_('Address'), null=True)
+    gst_number = models.TextField(_('GST Number'), null=True)
+    assigned_to = models.ForeignKey(get_user_model(), on_delete=models.PROTECT, related_name='managed_by', null=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _('Store')
+        verbose_name_plural = _('Stores')
