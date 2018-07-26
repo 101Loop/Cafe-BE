@@ -1,12 +1,42 @@
 import datetime
 
+
 CUSTOM_APPS = [
     'rest_framework',
     'drfaddons',
+    'restaurant.apps.RestaurantConfig',
+    'offers.apps.OffersConfig',
+    # 'users.apps.UsersConfig',
 ]
 
+AUTHENTICATION_BACKENDS = ['users.auth.MultiFieldModelBackend',
+                           ]
 
-AUTH_USER_MODEL = 'users.User'
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'drfaddons.auth.JSONWebTokenAuthenticationQS',
+    ),
+
+    'DEFAULT_PARSER_CLASSES': (
+        'rest_framework.parsers.JSONParser',
+    ),
+
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    ),
+
+    'DEFAULT_FILTER_BACKENDS': (
+        'drfaddons.filters.IsOwnerFilterBackend',
+        'django_filters.rest_framework.DjangoFilterBackend'
+    ),
+
+}
+
+# AUTH_USER_MODEL = 'users.User'
 
 JWT_AUTH = {
     'JWT_ENCODE_HANDLER': 'rest_framework_jwt.utils.jwt_encode_handler',
@@ -43,6 +73,10 @@ JWT_AUTH_KEY = 'Authorization'
 USE_TZ = False
 
 TIME_ZONE = 'Asia/Kolkata'
+
+STATIC_URL = '/static/'
+
+STATIC_ROOT = 'static'
 
 JET_THEMES = [
     {
