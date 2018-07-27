@@ -78,5 +78,12 @@ class Store(CreateUpdateModel):
         verbose_name = _('Store')
         verbose_name_plural = _('Stores')
 
-# TODO: Create a class for hasItem: item, store, in_stock
+
+class HasItem(CreateUpdateModel):
+    item = models.ForeignKey(Item, on_delete=models.PROTECT)
+    store = models.ForeignKey(Store, on_delete=models.PROTECT)
+    in_stock = models.BooleanField(_('In Stock'))
+
+
+# TODO: Create a class for hasItem: item, store, in_stock Done
 # TODO: Add ingredients for items (Future)

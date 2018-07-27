@@ -1,0 +1,10 @@
+{
+    "dev": {
+        "aws_region": "ap-south-1",
+        "django_settings": "OfficeCafe.settings",
+        "profile_name": "officecafe",
+        "project_name": "officecafe-be",
+        "runtime": "python3.6",
+        "s3_bucket": "zappa-ofhw78x3y"
+    }
+}

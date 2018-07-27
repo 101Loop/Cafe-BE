@@ -21,7 +21,7 @@ class LunchPackSerializer(serializers.ModelSerializer):
         from .models import LunchPack
 
         model = LunchPack
-        fields = ('name', 'price', 'items', 'category', 'id')
+        fields = ('id', 'name', 'price', 'items', 'category')
 
 
 class ShowStoreSerializer(serializers.ModelSerializer):
@@ -30,4 +30,4 @@ class ShowStoreSerializer(serializers.ModelSerializer):
         from .models import Store
 
         model = Store
-        fields = ('name', 'mobile', 'landline', 'address', 'gst_number', 'id')
+        fields = ('id', 'name', 'mobile', 'landline', 'address', 'gst_number')

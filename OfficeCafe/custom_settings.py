@@ -22,6 +22,8 @@ REST_FRAMEWORK = {
         'drfaddons.auth.JSONWebTokenAuthenticationQS',
     ),
 
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+
     'DEFAULT_PARSER_CLASSES': (
         'rest_framework.parsers.JSONParser',
     ),
