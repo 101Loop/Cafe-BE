@@ -19,30 +19,26 @@ class BillingHeader(CreateUpdateModel):
 
     @property
     def subtotal(self):
-        items = self.billitem.all()
-        if len(items) > 0:
-            from django.db.models import Sum
-
-            return items.aggregate(Sum('subtotal_price'))
-        else:
-            return 0
+        sum = 0
+        items = self.billitem_set.all()
+        for item in items:
+            sum += item.subtotal_price
+        return sum
 
     @property
     def total(self):
-        items = self.billitem.all()
-        if len(items) > 0:
-            from django.db.models import Sum
-
-            return items.aggregate(Sum('total_price'))
-        else:
-            return 0
+        sum = 0
+        items = self.billitem_set.all()
+        for item in items:
+            sum += item.total_price
+        return sum
 
     @property
     def gst(self):
         return self.total - self.subtotal
 
     def __str__(self):
-        return 'Bill No - ' + str(self.bill_no) + 'And Order No - ' + str(self.order_no)
+        return str(self.bill_no) + ' | ' + str(self.order_no)
 
     class Meta:
         verbose_name = _('Billing Header')
@@ -58,14 +54,14 @@ class BillItem(models.Model):
 
     @property
     def subtotal_price(self):
-        return self.item.item_price*self.quantity
+        return self.item.subtotal*self.quantity
     
     @property
     def total_price(self):
-        return self.item.total_price*self.quantity
+        return self.item.total*self.quantity
 
     def __str__(self):
-        return self.item
+        return str(self.billheader) + ' | ' + str(self.item)
 
     class Meta:
         verbose_name = _('Bill Item')

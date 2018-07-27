@@ -26,14 +26,14 @@ class Item(CreateUpdateModel):
     gst_inclusive = models.BooleanField(_('GST Inclusive?'), default=True)
 
     @property
-    def item_price(self):
+    def subtotal(self):
         if self.gst_inclusive:
             return self.price/(1+(self.gst/100))
         else:
             return self.price
 
     @property
-    def total_price(self):
+    def total(self):
         if self.gst_inclusive:
             return self.price
         else:
@@ -77,3 +77,6 @@ class Store(CreateUpdateModel):
     class Meta:
         verbose_name = _('Store')
         verbose_name_plural = _('Stores')
+
+# TODO: Create a class for hasItem: item, store, in_stock
+# TODO: Add ingredients for items (Future)

@@ -1,32 +1,52 @@
 from rest_framework import serializers
 
 
-class BillItemSerializer(serializers.ModelSerializer):
+class ShowBillItemSerializer(serializers.ModelSerializer):
+    from restaurant.serializers import ShowItemSerializer
+    item = ShowItemSerializer(many=False)
 
     class Meta:
         from .models import BillItem
 
         model = BillItem
-        fields = '__all__'
+        fields = ('id', 'item', 'quantity')
 
 
-class ShowBillingHeaderSerializer(serializers.ModelSerializer):
+class ShowBillSerializer(serializers.ModelSerializer):
+    from restaurant.serializers import ShowStoreSerializer
+    store = ShowStoreSerializer(many=False)
+    billitem_set = ShowBillItemSerializer(many=True)
 
     class Meta:
         from .models import BillingHeader
 
         model = BillingHeader
-        fields = '__all__'
+        fields = ('id', 'bill_date', 'due_date', 'name', 'mobile', 'email', 'store', 'order_no', 'bill_no', 'subtotal',
+                  'total', 'gst', 'billitem_set', 'create_date', 'created_by')
+
+
+class AddBillItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        from .models import BillItem
+
+        model = BillItem
+        fields = ('item', 'quantity')
 
 
 class AddBillingHeaderSerializer(serializers.ModelSerializer):
-
-    name = serializers.CharField(required=False)
-    mobile = serializers.CharField(required=False)
-    email = serializers.EmailField(required=False)
+    billitem_set = AddBillItemSerializer(many=True)
 
     class Meta:
         from .models import BillingHeader
 
         model = BillingHeader
-        fields = '__all__'
+        fields = ('bill_date', 'due_date', 'name', 'mobile', 'email', 'store', 'order_no', 'bill_no', 'billitem_set')
+
+    def create(self, validated_data):
+        from .models import BillingHeader, BillItem
+
+        items = validated_data.pop('billitem_set')
+        bh = BillingHeader.objects.create(**validated_data)
+        for item in items:
+            BillItem.objects.create(billheader=bh, **item)
+        return bh

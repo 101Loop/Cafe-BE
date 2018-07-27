@@ -2,23 +2,17 @@ from rest_framework import serializers
 
 
 class ShowItemSerializer(serializers.ModelSerializer):
+    tags = serializers.StringRelatedField(many=True)
+    category = serializers.SerializerMethodField()
 
     class Meta:
         from .models import Item
         model = Item
-        fields = '__all__'
+        fields = ('id', 'category', 'name', 'price', 'image', 'tags', 'hsn', 'desc', 'gst', 'gst_inclusive', 'subtotal',
+                  'total')
 
-
-class AddItemSerializer(serializers.ModelSerializer):
-
-    name = serializers.CharField(required=False)
-    image = serializers.URLField(required=False)
-
-    class Meta:
-        from .models import Item
-
-        model = Item
-        fields = '__all__'
+    def get_category(self, obj):
+        return obj.get_category_display()
 
 
 class LunchPackSerializer(serializers.ModelSerializer):
@@ -27,7 +21,7 @@ class LunchPackSerializer(serializers.ModelSerializer):
         from .models import LunchPack
 
         model = LunchPack
-        fields = '__all__'
+        fields = ('name', 'price', 'items', 'category', 'id')
 
 
 class ShowStoreSerializer(serializers.ModelSerializer):
@@ -36,17 +30,4 @@ class ShowStoreSerializer(serializers.ModelSerializer):
         from .models import Store
 
         model = Store
-        fields = '__all__'
-
-
-class AddStoreSerializer(serializers.ModelSerializer):
-    mobile = serializers.CharField(required=False)
-    landline = serializers.CharField(required=False)
-    address = serializers.CharField(required=False)
-    gst_number = serializers.CharField(required=False)
-
-    class Meta:
-        from .models import Store
-
-        model = Store
-        fields = '__all__'
+        fields = ('name', 'mobile', 'landline', 'address', 'gst_number', 'id')
