@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=500, null=True, verbose_name='Full Name')),
                 ('mobile', models.CharField(max_length=15, null=True, verbose_name='Mobile Number')),
                 ('email', models.EmailField(max_length=254, null=True, verbose_name='Email ID')),
-                ('order_no', models.CharField(default=billing.models.BillingHeader.number, max_length=20, verbose_name='Order Number')),
+                ('order_no', models.CharField(max_length=20, verbose_name='Order Number')),
                 ('bill_no', models.CharField(max_length=20, verbose_name='Bill Number')),
             ],
             options={

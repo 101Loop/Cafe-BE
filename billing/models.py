@@ -7,12 +7,12 @@ from drfaddons.models import CreateUpdateModel
 class BillingHeader(CreateUpdateModel):
     from restaurant.models import Store
 
-    def number(self):
-        no = BillingHeader.objects.count()
-        if no == None:
-            return 10000
-        else:
-            return no + 1
+    # def number(self):
+    #     no = BillingHeader.objects.count()
+    #     if no == None:
+    #         return 10000
+    #     else:
+    #         return no + 1
 
     bill_date = models.DateTimeField(_('Bill Date'))
     due_date = models.DateField(_('Due Date'))
@@ -21,7 +21,7 @@ class BillingHeader(CreateUpdateModel):
     email = models.EmailField(_('Email ID'), null=True)
     store = models.ForeignKey(Store, on_delete=models.PROTECT)
     # TODO: auto generate these two on the basis of regex/pattern
-    order_no = models.CharField(_('Order Number'), max_length=20, default=number)
+    order_no = models.CharField(_('Order Number'), max_length=20)
     bill_no = models.CharField(_('Bill Number'), max_length=20)
 
     @property
