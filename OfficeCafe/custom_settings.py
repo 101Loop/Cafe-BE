@@ -7,7 +7,7 @@ CUSTOM_APPS = [
     'restaurant.apps.RestaurantConfig',
     'billing.apps.BillingConfig',
     'offers.apps.OffersConfig',
-    'users.apps.UsersConfig',
+    'drf_user',
 ]
 
 AUTHENTICATION_BACKENDS = ['users.auth.MultiFieldModelBackend',
@@ -39,7 +39,7 @@ REST_FRAMEWORK = {
 
 }
 
-AUTH_USER_MODEL = 'users.User'
+AUTH_USER_MODEL = 'drf_user.User'
 
 JWT_AUTH = {
     'JWT_ENCODE_HANDLER': 'rest_framework_jwt.utils.jwt_encode_handler',
@@ -113,3 +113,22 @@ JET_THEMES = [
         'title': 'Light Gray'
     }
 ]
+
+USER_SETTINGS = {
+    'DEFAULT_ACTIVE_STATE': False,
+    'OTP': {
+        'LENGTH': 4,
+        'ALLOWED_CHARS': '1234567890',
+        'VALIDATION_ATTEMPTS': 3,
+        'SUBJECT': 'OTP for Verification',
+        'COOLING_PERIOD': 0
+    },
+    'MOBILE_VALIDATION': False,
+    'EMAIL_VALIDATION': False,
+    'REGISTRATION': {
+        'SEND_MAIL': False,
+        'MAIL_SUBJECT': 'Welcome to DRF-USER',
+        'TEXT_MAIL_BODY': 'Your account has been created.',
+        'HTML_MAIL_BODY': 'Your account has been created.'
+    }
+}

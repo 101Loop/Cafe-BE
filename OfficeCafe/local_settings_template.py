@@ -17,3 +17,10 @@ DATABASES = {
         'PASSWORD': '---',
     }
 }
+
+HSPSMS = {
+    'USER': '',
+    'APIKEY': '',
+    'SENDER': 'OFCAFE'
+}
+
