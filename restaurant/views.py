@@ -1,11 +1,10 @@
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import AllowAny
-
+from drfaddons.generics import OwnerCreateAPIView
 
 class ShowItemView(ListAPIView):
     from .models import Item
     from .serializers import ShowItemSerializer
-    from drfaddons.filters import IsOwnerFilterBackend
     from django_filters.rest_framework import DjangoFilterBackend
     from rest_framework.filters import SearchFilter
     from .filters import RangeFiltering
@@ -15,7 +14,7 @@ class ShowItemView(ListAPIView):
     permission_classes = (AllowAny, )
     queryset = Item.objects.all().order_by('-create_date')
     serializer_class = ShowItemSerializer
-    filter_backends = (IsOwnerFilterBackend, DjangoFilterBackend, SearchFilter)
+    filter_backends = (DjangoFilterBackend, SearchFilter)
 
     filter_class = RangeFiltering
     search_fields = ('^name', '^tag', '^category' )
@@ -24,8 +23,10 @@ class ShowItemView(ListAPIView):
 class ShowLunchPackView(ListAPIView):
     from .models import LunchPack
     from .serializers import LunchPackSerializer
+    from django_filters.rest_framework import DjangoFilterBackend
 
     permission_classes = (AllowAny, )
+    filter_backends = (DjangoFilterBackend, )
     queryset = LunchPack.objects.all().order_by('-create_date')
     serializer_class = LunchPackSerializer
 
@@ -33,12 +34,20 @@ class ShowLunchPackView(ListAPIView):
 class ShowStoreView(ListAPIView):
     from .models import Store
     from .serializers import ShowStoreSerializer
-    from drfaddons.filters import IsOwnerFilterBackend
     from django_filters.rest_framework import DjangoFilterBackend
     from rest_framework.filters import SearchFilter
 
     permission_classes = (AllowAny, )
     queryset = Store.objects.all().order_by('-create_date')
     serializer_class = ShowStoreSerializer
-    filter_backends = (IsOwnerFilterBackend, DjangoFilterBackend, SearchFilter)
+    filter_backends = (DjangoFilterBackend, SearchFilter)
     search_fields = ('^name', '^address')
+
+
+class AddItemView(OwnerCreateAPIView):
+    from .serializers import AddItemSerializer
+    from rest_framework.permissions import IsAdminUser
+
+    permission_classes = (IsAdminUser, )
+    serializer_class = AddItemSerializer
+
