@@ -1,8 +1,11 @@
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, UpdateAPIView
 from rest_framework.permissions import AllowAny
 from drfaddons.generics import OwnerCreateAPIView
 
 class ShowItemView(ListAPIView):
+    """
+    This view will show all the details of the items.
+    """
     from .models import Item
     from .serializers import ShowItemSerializer
     from django_filters.rest_framework import DjangoFilterBackend
@@ -21,6 +24,9 @@ class ShowItemView(ListAPIView):
 
 
 class ShowLunchPackView(ListAPIView):
+    """
+    This view will show all the details of the lunch pack.
+    """
     from .models import LunchPack
     from .serializers import LunchPackSerializer
     from django_filters.rest_framework import DjangoFilterBackend
@@ -32,6 +38,9 @@ class ShowLunchPackView(ListAPIView):
 
 
 class ShowStoreView(ListAPIView):
+    """
+    This view will show all the stores.
+    """
     from .models import Store
     from .serializers import ShowStoreSerializer
     from django_filters.rest_framework import DjangoFilterBackend
@@ -45,9 +54,30 @@ class ShowStoreView(ListAPIView):
 
 
 class AddItemView(OwnerCreateAPIView):
+    """
+    This view will allow only the admin to add new items.
+    """
     from .serializers import AddItemSerializer
     from rest_framework.permissions import IsAdminUser
 
     permission_classes = (IsAdminUser, )
     serializer_class = AddItemSerializer
+
+
+class ShowOrderView(ListAPIView):
+    from .models import Order
+    from .serializers import ShowOrderSerializer
+    from rest_framework.permissions import IsAdminUser
+
+    permission_classes = (IsAdminUser, )
+    queryset = Order.objects.all()
+    serializer_class = ShowOrderSerializer
+
+
+class UpdateFeedbackView(UpdateAPIView):
+    from .models import Order
+    from .serializers import UpdateFeedbackSerializer
+
+    queryset = Order
+    serializer_class = UpdateFeedbackSerializer
 

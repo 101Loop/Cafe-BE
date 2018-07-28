@@ -10,7 +10,7 @@ CUSTOM_APPS = [
     'drf_user',
 ]
 
-AUTHENTICATION_BACKENDS = ['users.auth.MultiFieldModelBackend',
+AUTHENTICATION_BACKENDS = ['drf_user.auth.MultiFieldModelBackend',
                            ]
 
 REST_FRAMEWORK = {

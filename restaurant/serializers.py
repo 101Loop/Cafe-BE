@@ -2,6 +2,9 @@ from rest_framework import serializers
 
 
 class ShowItemSerializer(serializers.ModelSerializer):
+    """
+    ShowItemSerializer is a model serializer to show the attributes of the item.
+    """
     tags = serializers.StringRelatedField(many=True)
     category = serializers.SerializerMethodField()
 
@@ -16,7 +19,9 @@ class ShowItemSerializer(serializers.ModelSerializer):
 
 
 class LunchPackSerializer(serializers.ModelSerializer):
-
+    """
+    LunchPackSerializer is a model serializer to show the details of the lunch pack.
+    """
     class Meta:
         from .models import LunchPack
 
@@ -25,7 +30,9 @@ class LunchPackSerializer(serializers.ModelSerializer):
 
 
 class ShowStoreSerializer(serializers.ModelSerializer):
-
+    """
+    ShowStoreSerializer is a model serializer to show the attributes of the store.
+    """
     class Meta:
         from .models import Store
 
@@ -34,6 +41,9 @@ class ShowStoreSerializer(serializers.ModelSerializer):
 
 
 class AddItemSerializer(serializers.ModelSerializer):
+    """
+    AddItemSerializer is a model serializer that includes the attributes required to add a new item.
+    """
     tags = serializers.StringRelatedField(many=True)
 
     class Meta:
@@ -41,3 +51,21 @@ class AddItemSerializer(serializers.ModelSerializer):
 
         model = Item
         fields = ('category', 'name', 'price', 'image', 'tags', 'hsn', 'desc', 'gst', 'gst_inclusive')
+
+
+class ShowOrderSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        from .models import Order
+
+        model = Order
+        fields = ('bill', 'mode', 'address', 'payment', 'status', 'wait_time')
+
+
+class UpdateFeedbackSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        from .models import Order
+
+        model = Order
+        fields = ('feedback', )
