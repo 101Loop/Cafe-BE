@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Item, Tag, LunchPack, Store, HasItem
+from .models import Item, Tag, LunchPack, Store, HasItem, Cook
 
 
 # TODO: Show price info: subtotal, total, gst
@@ -19,9 +19,6 @@ class ItemAdmin(admin.ModelAdmin):
         }),
         ('Good and Service Tax Information', {
             'fields': ('hsn', 'gst', 'gst_inclusive')
-        }),
-        ('Price Info', {
-            'fields': ('gst', )
         }),
         ('advanced options', {
             'fields': ('created_by', 'update_date')
@@ -102,3 +99,4 @@ admin.site.register(Item, ItemAdmin)
 admin.site.register(LunchPack, LunchPackAdmin)
 admin.site.register(Store, StoreAdmin)
 admin.site.register(HasItem, HasItemAdmin)
+admin.site.register(Cook)
