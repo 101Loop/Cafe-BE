@@ -47,6 +47,17 @@ class Item(CreateUpdateModel):
     def __str__(self):
         return self.name
 
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        if not self.image:
+            self.image = None
+        if not self.hsn:
+            self.hsn = None
+        if not self.desc:
+            self.desc = None
+        if not self.tags:
+            self.tags = None
+
     class Meta:
         verbose_name = _('Item')
         verbose_name_plural = _('Items')
