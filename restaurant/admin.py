@@ -27,6 +27,7 @@ class ItemAdmin(admin.ModelAdmin):
             'fields': ('created_by', 'update_date')
         }),
     )
+
     def get_readonly_fields(self, request, obj= None):
         """
         Makes created_by & create_date readonly when editing.
