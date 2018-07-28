@@ -31,3 +31,13 @@ class ShowStoreSerializer(serializers.ModelSerializer):
 
         model = Store
         fields = ('id', 'name', 'mobile', 'landline', 'address', 'gst_number')
+
+
+class AddItemSerializer(serializers.ModelSerializer):
+    tags = serializers.StringRelatedField(many=True)
+
+    class Meta:
+        from .models import Item
+
+        model = Item
+        fields = ('category', 'name', 'price', 'image', 'tags', 'hsn', 'desc', 'gst', 'gst_inclusive')
