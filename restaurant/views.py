@@ -2,6 +2,7 @@ from rest_framework.generics import ListAPIView, UpdateAPIView
 from rest_framework.permissions import AllowAny
 from drfaddons.generics import OwnerCreateAPIView
 
+
 class ShowItemView(ListAPIView):
     """
     This view will show all the details of the items.
@@ -70,7 +71,7 @@ class ShowOrderView(ListAPIView):
     from rest_framework.permissions import IsAdminUser
 
     permission_classes = (IsAdminUser, )
-    queryset = Order.objects.all()
+    queryset = Order.objects.all().order_by('-create_date')
     serializer_class = ShowOrderSerializer
 
 
@@ -80,4 +81,3 @@ class UpdateFeedbackView(UpdateAPIView):
 
     queryset = Order
     serializer_class = UpdateFeedbackSerializer
-

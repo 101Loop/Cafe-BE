@@ -21,10 +21,10 @@ class Item(CreateUpdateModel):
     category = models.CharField(_('Category'), max_length=254, choices=[('V', 'Veg'), ('N', 'Non-Veg'), ('J', 'Jain')])
     name = models.CharField(_('Name'), max_length=254, unique=True)
     price = models.DecimalField(_('Item Price'), max_digits=10, decimal_places=3)
-    image = models.URLField(_('Image URL'), max_length=254, null=True)
+    image = models.URLField(_('Image URL'), max_length=254, null=True, blank=True)
     tags = models.ManyToManyField(Tag)
-    hsn = models.CharField(_('HSN (GST)'), null=True, max_length=20)
-    desc = models.TextField(_('Description'), null=True)
+    hsn = models.CharField(_('HSN (GST)'), null=True, blank=True, max_length=20)
+    desc = models.TextField(_('Description'), null=True, blank=True)
     gst = models.DecimalField(_('GST Percentage'), max_digits=5, decimal_places=2, default=5.00)
     gst_inclusive = models.BooleanField(_('GST Inclusive?'), default=True)
     is_addon = models.BooleanField(_('Is Addon'), default=False)
@@ -87,11 +87,11 @@ class Store(CreateUpdateModel):
     from django.contrib.auth import get_user_model
 
     name = models.CharField(_('Store Name'), max_length=254, unique=True)
-    mobile = models.CharField(_('Mobile Number'), max_length=15, null=True)
-    landline = models.CharField(_('Landline Number'), max_length=20, null=True)
-    address = models.TextField(_('Address'), null=True)
-    gst_number = models.TextField(_('GST Number'), null=True)
-    assigned_to = models.ForeignKey(get_user_model(), on_delete=models.PROTECT, related_name='managed_by', null=True)
+    mobile = models.CharField(_('Mobile Number'), max_length=15, null=True, blank=True)
+    landline = models.CharField(_('Landline Number'), max_length=20, null=True, blank=True)
+    address = models.TextField(_('Address'), null=True, blank=True)
+    gst_number = models.TextField(_('GST Number'), null=True, blank=True)
+    assigned_to = models.ForeignKey(get_user_model(), on_delete=models.PROTECT, related_name='managed_by', null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -119,7 +119,7 @@ class Cook(CreateUpdateModel):
     store = models.ForeignKey(Store, on_delete=models.PROTECT)
 
 
-class Order(models.Model):
+class Order(CreateUpdateModel):
     from billing.models import BillingHeader
 
     items = models.ForeignKey(Item, on_delete=models.PROTECT)

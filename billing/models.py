@@ -16,9 +16,9 @@ class BillingHeader(CreateUpdateModel):
 
     bill_date = models.DateTimeField(_('Bill Date'))
     due_date = models.DateField(_('Due Date'))
-    name = models.CharField(_('Full Name'), max_length=500, null=True)
-    mobile = models.CharField(_('Mobile Number'), max_length=15, null=True)
-    email = models.EmailField(_('Email ID'), null=True)
+    name = models.CharField(_('Full Name'), max_length=500, null=True, blank=True)
+    mobile = models.CharField(_('Mobile Number'), max_length=15, null=True, blank=True)
+    email = models.EmailField(_('Email ID'), null=True, blank=True)
     store = models.ForeignKey(Store, on_delete=models.PROTECT)
     # TODO: auto generate these two on the basis of regex/pattern
     order_no = models.CharField(_('Order Number'), max_length=20)

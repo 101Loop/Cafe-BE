@@ -1,7 +1,7 @@
 from django.contrib import admin
-from .models import Social
 
-class MyModelAdmin(admin.ModelAdmin):
+
+class SocialAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (None, {
@@ -20,6 +20,3 @@ class MyModelAdmin(admin.ModelAdmin):
         if not obj:
             return ()
         return 'created_by', 'create_date'
-
-
-admin.site.register(Social, MyModelAdmin)

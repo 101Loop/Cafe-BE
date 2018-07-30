@@ -3,6 +3,7 @@ from rest_framework import serializers
 
 class ShowBillItemSerializer(serializers.ModelSerializer):
     from restaurant.serializers import ShowItemSerializer
+
     item = ShowItemSerializer(many=False)
 
     class Meta:
@@ -14,6 +15,7 @@ class ShowBillItemSerializer(serializers.ModelSerializer):
 
 class ShowBillSerializer(serializers.ModelSerializer):
     from restaurant.serializers import ShowStoreSerializer
+
     store = ShowStoreSerializer(many=False)
     billitem_set = ShowBillItemSerializer(many=True)
 
@@ -26,6 +28,7 @@ class ShowBillSerializer(serializers.ModelSerializer):
 
 
 class AddBillItemSerializer(serializers.ModelSerializer):
+
     class Meta:
         from .models import BillItem
 
