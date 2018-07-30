@@ -20,7 +20,9 @@ user_settings = {
         'SEND_MAIL': False,
         'MAIL_SUBJECT': 'Welcome to DRF-USER',
         'TEXT_MAIL_BODY': 'Your account has been created.',
-        'HTML_MAIL_BODY': 'Your account has been created.'
+        'HTML_MAIL_BODY': 'Your account has been created.',
+        'SEND_SMS': False,
+        'SMS_BODY': 'Welcome to OfficeCafe. Your account has been created.'
     }
 }
 

@@ -5,7 +5,6 @@ from . import user_settings, update_user_settings
 from rest_framework.generics import UpdateAPIView
 
 
-update_user_settings()
 User = get_user_model()
 otp_settings = user_settings['OTP']
 
@@ -254,8 +253,6 @@ class LoginOTP(ValidateAndPerformView):
     serializer_class = LoginOTPSerializer
 
     def validated(self, serialized_data, *args, **kwargs):
-        from drfaddons.add_ons import send_message
-
         created = False
 
         otp = serialized_data.data['otp']
@@ -289,7 +286,7 @@ class LoginOTP(ValidateAndPerformView):
             else:
                 status_code = status.HTTP_400_BAD_REQUEST
         else:
-            if otp != '0000':
+            if otp == '0000':
                 if not created:
                     otp_obj = generate_otp('email', user.email)
                     data = send_otp('email', user.email, otp_obj, user.email)

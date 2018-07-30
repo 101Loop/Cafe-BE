@@ -22,5 +22,6 @@ class MyModelAdmin(admin.ModelAdmin):
             return ()
         return 'created_by', 'create_date'
 
+
 admin.site.register(BillingHeader, MyModelAdmin)
 admin.site.register(BillItem)

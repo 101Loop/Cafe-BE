@@ -10,8 +10,7 @@ CUSTOM_APPS = [
     'drf_user',
 ]
 
-AUTHENTICATION_BACKENDS = ['drf_user.auth.MultiFieldModelBackend',
-                           ]
+AUTHENTICATION_BACKENDS = ['drf_user.auth.MultiFieldModelBackend',]
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
@@ -115,7 +114,7 @@ JET_THEMES = [
 ]
 
 USER_SETTINGS = {
-    'DEFAULT_ACTIVE_STATE': False,
+    'DEFAULT_ACTIVE_STATE': True,
     'OTP': {
         'LENGTH': 4,
         'ALLOWED_CHARS': '1234567890',
@@ -126,9 +125,11 @@ USER_SETTINGS = {
     'MOBILE_VALIDATION': False,
     'EMAIL_VALIDATION': False,
     'REGISTRATION': {
-        'SEND_MAIL': False,
-        'MAIL_SUBJECT': 'Welcome to DRF-USER',
+        'SEND_MAIL': True,
+        'MAIL_SUBJECT': 'Welcome to OfficeCafe',
         'TEXT_MAIL_BODY': 'Your account has been created.',
-        'HTML_MAIL_BODY': 'Your account has been created.'
+        'HTML_MAIL_BODY': 'Your account has been created.',
+        'SEND_SMS': True,
+        'SMS_BODY': 'Welcome to OfficeCafe. Your account has been created with us.'
     }
 }
