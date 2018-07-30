@@ -248,6 +248,11 @@ def check_validation(value):
 
 
 class LoginOTP(ValidateAndPerformView):
+    """
+    This function allows the user to login using the otp. The data require is mobile no.
+    If something happens and the otp is not send to the mobile no then it will ask for the email of the user
+    and the otp will be send to the email of the user.
+    """
     from .serializer import LoginOTPSerializer
 
     serializer_class = LoginOTPSerializer

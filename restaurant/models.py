@@ -92,11 +92,11 @@ class Store(CreateUpdateModel):
 
 class HasItem(CreateUpdateModel):
     """
-    This custom HasItem will show if an item is in stock in a store or not.
+    This custom HasItem model will show if an item is in stock in a store or not.
     """
     item = models.ForeignKey(Item, on_delete=models.PROTECT)
     store = models.ForeignKey(Store, on_delete=models.PROTECT)
-    in_stock = models.BooleanField(_('In Stock'))
+    in_stock = models.BooleanField(_('In Stock'), default=True)
 
 
 class Cook(CreateUpdateModel):
@@ -115,6 +115,9 @@ class Cook(CreateUpdateModel):
 
 
 class Order(CreateUpdateModel):
+    """
+    A custom Order model that includes all the details of an order.
+    """
     from billing.models import BillingHeader
 
     items = models.ForeignKey(Item, on_delete=models.PROTECT)

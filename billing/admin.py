@@ -5,8 +5,11 @@ from .models import BillingHeader, BillItem
 class MyModelAdmin(admin.ModelAdmin):
 
     fieldsets = (
-        (None, {
-            'fields': ('bill_date', 'due_date', 'name', 'mobile', 'email', 'store', 'order_no', 'bill_no')
+        ('Customer Info', {
+            'fields': ('name', 'mobile', 'email')
+        }),
+        ('Bill Details', {
+            'fields': ('bill_date', 'due_date', 'store', 'order_no', 'bill_no')
         }),
         ('advanced options', {
             'classes': ('collaspe',),

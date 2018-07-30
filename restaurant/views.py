@@ -16,7 +16,7 @@ class ShowItemView(ListAPIView):
     # TODO: After in_stock implementation, require to select store first then show item.
 
     permission_classes = (AllowAny, )
-    queryset = Item.objects.all().order_by('-create_date')
+    queryset = Item.objects.all()#.filter(store_id=val).filter(in_stock=True).order_by('-create_date')
     serializer_class = ShowItemSerializer
     filter_backends = (DjangoFilterBackend, SearchFilter)
 
