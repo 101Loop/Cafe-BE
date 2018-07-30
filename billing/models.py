@@ -5,6 +5,9 @@ from drfaddons.models import CreateUpdateModel
 
 
 class BillingHeader(CreateUpdateModel):
+    """
+    A custom BillingHeader model that includes the details of a bill.
+    """
     from restaurant.models import Store
 
     # def number(self):

@@ -37,6 +37,9 @@ class AddBillItemSerializer(serializers.ModelSerializer):
 
 
 class AddBillingHeaderSerializer(serializers.ModelSerializer):
+    """
+    AddBillingHeaderSerializer is a model serializer that includes the attributes required for creating a new bill.
+    """
     billitem_set = AddBillItemSerializer(many=True)
 
     class Meta:

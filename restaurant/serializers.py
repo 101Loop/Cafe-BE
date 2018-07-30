@@ -54,6 +54,9 @@ class AddItemSerializer(serializers.ModelSerializer):
 
 
 class ShowOrderSerializer(serializers.ModelSerializer):
+    """
+    ShowOrderSerializer is a model serializer that shows the attributes of an order.
+    """
 
     class Meta:
         from .models import Order
@@ -63,6 +66,9 @@ class ShowOrderSerializer(serializers.ModelSerializer):
 
 
 class UpdateFeedbackSerializer(serializers.ModelSerializer):
+    """
+    UpdateFeedbackSerializer is a model serializer to update the feedback of the user.
+    """
 
     class Meta:
         from .models import Order

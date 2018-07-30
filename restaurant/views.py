@@ -7,7 +7,7 @@ class ShowItemView(ListAPIView):
     """
     This view will show all the details of the items.
     """
-    from .models import Item
+    from .models import HasItem, Store, Item
     from .serializers import ShowItemSerializer
     from django_filters.rest_framework import DjangoFilterBackend
     from rest_framework.filters import SearchFilter
@@ -66,6 +66,10 @@ class AddItemView(OwnerCreateAPIView):
 
 
 class ShowOrderView(ListAPIView):
+    """
+    This view is to show the details of the order.
+    Only admin has access to it.
+    """
     from .models import Order
     from .serializers import ShowOrderSerializer
     from rest_framework.permissions import IsAdminUser
@@ -76,6 +80,9 @@ class ShowOrderView(ListAPIView):
 
 
 class UpdateFeedbackView(UpdateAPIView):
+    """
+    This view is to get the feedback from the user.
+    """
     from .models import Order
     from .serializers import UpdateFeedbackSerializer
 

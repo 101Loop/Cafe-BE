@@ -118,6 +118,12 @@ class Cook(CreateUpdateModel):
     profile_pic = models.URLField(_('Profile Picture'), max_length=254, null=True, blank=True)
     store = models.ForeignKey(Store, on_delete=models.PROTECT)
 
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _('Cook')
+
 
 class Order(CreateUpdateModel):
     from billing.models import BillingHeader
@@ -130,6 +136,10 @@ class Order(CreateUpdateModel):
     status = models.CharField(_('Status'), max_length=254, choices=[('1', 'Completed'), ('2', 'Cancel'), ('3', 'in_process')])
     feedback = models.CharField(_('Feedback'), max_length=254, null=True, blank=True)
     wait_time = models.CharField(_('Wait Time'), max_length=254, null=True, blank=True)
+
+    class Meta:
+        verbose_name = _('Order')
+        verbose_name_plural = _('Orders')
 
 
 # TODO: Add ingredients for items (Future)
