@@ -21,3 +21,9 @@ class AddBillingHeaderView(OwnerCreateAPIView):
     from .serializers import AddBillingHeaderSerializer
 
     serializer_class = AddBillingHeaderSerializer
+
+    def perform_create(self, serializer):
+        from .signals import signals
+
+        obj = serializer.save(created_by=self.request.user)
+        signals.order_placed.send(bh=obj, sender=None)
