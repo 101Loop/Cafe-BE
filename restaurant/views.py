@@ -86,5 +86,5 @@ class UpdateFeedbackView(UpdateAPIView):
     from .models import Order
     from .serializers import UpdateFeedbackSerializer
 
-    queryset = Order
+    queryset = Order.objects.all()
     serializer_class = UpdateFeedbackSerializer
