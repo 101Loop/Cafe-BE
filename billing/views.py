@@ -24,6 +24,7 @@ class AddBillingHeaderView(OwnerCreateAPIView):
 
     def perform_create(self, serializer):
         from .signals import signals
+        from restaurant.models import Order
 
         obj = serializer.save(created_by=self.request.user)
         signals.order_placed.send(bh=obj, sender=None)
