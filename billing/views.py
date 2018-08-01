@@ -1,5 +1,4 @@
 from drfaddons.generics import OwnerCreateAPIView, OwnerListAPIView
-from rest_framework.decorators import api_view
 
 
 class ShowBillView(OwnerListAPIView):
@@ -35,25 +34,30 @@ class AddBillingHeaderView(OwnerCreateAPIView):
         # order.save(id=BillingHeader.pk)
 
 
-@api_view(['POST'])
-def Instamojo(request):
-    import requests
-    import json
+class Instamojo(OwnerListAPIView):
+    from rest_framework.permissions import AllowAny
 
-    client_id = "test_pIMCtGp8XxFpDoVPvHYffqDpQnMvkycO0v7"
-    client_secret = "test_cptumZ9rNX9TJOyS1WzveRqFfnw9wtDm4JCunScEuMmu1Sifu9Wp9xIocpAPcNMCqohvgqwI2QDs30PMVkLz5dkCh1q2dmLE6y1ABeZa1ZuMRA3iDqSUIUg47om"
-    env = "production"
+    permission_classes = (AllowAny, )
 
-    if (client_id.startswith("test")):
-        url = "https://test.instamojo.com/oauth2/token/"
-        env = "test"
+    def get(self, request, *args, **kwargs):
+        import requests
+        import json
+        from rest_framework.response import Response
 
-    payload = "grant_type=client_credentials&client_id=" + client_id + "&client_secret=" + client_secret
-    headers = {
-        'content-type': "application/x-www-form-urlencoded",
-        'cache-control': "no-cache"
-    }
+        client_id = "test_pIMCtGp8XxFpDoVPvHYffqDpQnMvkycO0v7"
+        client_secret = "test_cptumZ9rNX9TJOyS1WzveRqFfnw9wtDm4JCunScEuMmu1Sifu9Wp9xIocpAPcNMCqohvgqwI2QDs30PMVkLz5dkCh1q2dmLE6y1ABeZa1ZuMRA3iDqSUIUg47om"
+        env = "production"
 
-    response = requests.request("POST", url, data=payload, headers=headers)
-    token = env + json.loads(response.text)["access_token"]
-    return token
+        if (client_id.startswith("test")):
+            url = "https://test.instamojo.com/oauth2/token/"
+            env = "test"
+
+        payload = "grant_type=client_credentials&client_id=" + client_id + "&client_secret=" + client_secret
+        headers = {
+            'content-type': "application/x-www-form-urlencoded",
+            'cache-control': "no-cache"
+        }
+
+        response = requests.request("POST", url, data=payload, headers=headers)
+        token = env + json.loads(response.text)["access_token"]
+        return Response(token)
