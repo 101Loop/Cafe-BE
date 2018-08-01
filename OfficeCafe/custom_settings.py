@@ -1,5 +1,4 @@
 import datetime
-from instamojo_wrapper import Instamojo
 
 
 CUSTOM_APPS = [
@@ -136,20 +135,3 @@ USER_SETTINGS = {
         'SMS_BODY': 'Welcome to OfficeCafe. Your account has been created with us.'
     }
 }
-
-
-
-# api = Instamojo(api_key='test_2e8398986827d0737f5ba3d3a20',
-#                 auth_token='test_a3dea9627890cfbf323e8c894ef')
-#
-# response = api.payment_request_create(
-#     amount='3499',
-#     purpose='FIFA 16',
-#     send_email=True,
-#     email="adityagupta93999@gmail.com",
-#     redirect_url="http://www.example.com/handle_redirect.py"
-#     )
-# # print the long URL of the payment request.
-# print (response['payment_request']['longurl'])
-# # print the unique ID(or payment request ID)
-# print (response['payment_request']['id'])
