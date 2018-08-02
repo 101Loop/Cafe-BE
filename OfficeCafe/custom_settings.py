@@ -3,6 +3,7 @@ import datetime
 
 CUSTOM_APPS = [
     'rest_framework',
+    'corsheaders',
     'drfaddons',
     'restaurant.apps.RestaurantConfig',
     'billing.apps.BillingConfig',
@@ -10,6 +11,26 @@ CUSTOM_APPS = [
     'drf_user',
     'drf_yasg',
 ]
+
+CUSTOM_MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware'
+]
+
+CORS_ORIGIN_WHITELIST = (
+    'officecafe.in',
+    'localhost:4200',
+    'localhost:4000',
+)
+
+
+CSRF_TRUSTED_ORIGINS = CORS_ORIGIN_WHITELIST
+
+CORS_ALLOW_METHODS = (
+    'GET',
+    'OPTIONS',
+    'POST',
+    'PUT'
+)
 
 
 AUTHENTICATION_BACKENDS = ['drf_user.auth.MultiFieldModelBackend',]
