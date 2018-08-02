@@ -30,9 +30,6 @@ class AddBillingHeaderView(OwnerCreateAPIView):
         obj = serializer.save(created_by=self.request.user)
         signals.order_placed.send(bh=obj, sender=None)
 
-        # order = Order()
-        # order.save(id=BillingHeader.pk)
-
 
 class Instamojo(OwnerListAPIView):
     from rest_framework.permissions import AllowAny
@@ -40,15 +37,17 @@ class Instamojo(OwnerListAPIView):
     permission_classes = (AllowAny, )
 
     def get(self, request, *args, **kwargs):
+        from django.http.response import HttpResponse
+
         import requests
         import json
-        from rest_framework.response import Response
 
         client_id = "test_pIMCtGp8XxFpDoVPvHYffqDpQnMvkycO0v7"
-        client_secret = "test_cptumZ9rNX9TJOyS1WzveRqFfnw9wtDm4JCunScEuMmu1Sifu9Wp9xIocpAPcNMCqohvgqwI2QDs30PMVkLz5dkCh1q2dmLE6y1ABeZa1ZuMRA3iDqSUIUg47om"
+        client_secret = "test_cptumZ9rNX9TJOyS1WzveRqFfnw9wtDm4JCunScEuMmu1Sifu9Wp9xIocpAPcNMCqohvgqwI2QDs30PMVkLz5d" \
+                        "kCh1q2dmLE6y1ABeZa1ZuMRA3iDqSUIUg47om"
         env = "production"
 
-        if (client_id.startswith("test")):
+        if client_id.startswith("test"):
             url = "https://test.instamojo.com/oauth2/token/"
             env = "test"
 
@@ -59,5 +58,5 @@ class Instamojo(OwnerListAPIView):
         }
 
         response = requests.request("POST", url, data=payload, headers=headers)
-        token = env + json.loads(response.text)["access_token"]
-        return Response(token)
+        token = env + json.loads(response.text)['access_token']
+        return HttpResponse(token)
