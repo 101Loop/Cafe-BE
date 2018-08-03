@@ -1,6 +1,22 @@
 from drfaddons.generics import OwnerCreateAPIView, OwnerListAPIView
 
 
+def get_user(email: str, mobile: str, name: str=None):
+    from django.contrib.auth import get_user_model
+
+    User = get_user_model()
+
+    try:
+        user = User.objects.get(mobile=mobile)
+    except User.DoesNotExist:
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            user = User.objects.create_user(username=mobile, email=email, mobile=mobile, name=name, is_active=True,
+                                            password=User.objects.make_random_password())
+    return user
+
+
 class ShowBillView(OwnerListAPIView):
     """
     This view will show the details of the bill.
@@ -19,19 +35,29 @@ class AddBillingHeaderView(OwnerCreateAPIView):
     This view is to create a new bill.
     """
     from .serializers import AddBillingHeaderSerializer
+    from rest_framework.permissions import AllowAny
 
     serializer_class = AddBillingHeaderSerializer
+    permission_classes = (AllowAny, )
 
     def perform_create(self, serializer):
         from .signals import signals
-        from restaurant.models import Order
-        from billing.models import BillingHeader
 
-        obj = serializer.save(created_by=self.request.user)
+        name = serializer.validated_data['name']
+        email = serializer.validated_data['email']
+        mobile = serializer.validated_data['mobile']
+
+        if self.request.user.is_authenticated:
+            obj = serializer.save(created_by=self.request.user)
+        else:
+            obj = serializer.save(created_by=get_user(email, mobile, name))
         signals.order_placed.send(bh=obj, sender=None)
 
 
 class Instamojo(OwnerListAPIView):
+    """
+    This view is for payment gateway with instamojo.
+    """
     from rest_framework.permissions import AllowAny
 
     permission_classes = (AllowAny, )

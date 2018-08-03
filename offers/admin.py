@@ -1,7 +1,7 @@
 from django.contrib import admin
+from drfaddons.admin import CreateUpdateAdmin
 
-
-class SocialAdmin(admin.ModelAdmin):
+class SocialAdmin(CreateUpdateAdmin):
 
     fieldsets = (
         (None, {
@@ -12,11 +12,3 @@ class SocialAdmin(admin.ModelAdmin):
             'fields': ('created_by', 'update_date')
         }),
     )
-
-    def get_readonly_fields(self, request, obj=None):
-        """
-        Makes created_by & create_date readonly when editing.
-        """
-        if not obj:
-            return ()
-        return 'created_by', 'create_date'

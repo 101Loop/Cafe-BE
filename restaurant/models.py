@@ -21,7 +21,7 @@ class Item(CreateUpdateModel):
     category = models.CharField(_('Category'), max_length=254, choices=[('V', 'Veg'), ('N', 'Non-Veg'), ('J', 'Jain')])
     name = models.CharField(_('Name'), max_length=254, unique=True)
     price = models.DecimalField(_('Item Price'), max_digits=10, decimal_places=3)
-    image = models.URLField(_('Image URL'), max_length=254, null=True, blank=True)
+    image = models.URLField(_('Image URL'), max_length=254, null=True, blank=True, default='https://officecafe.in/assets/images/logo_whiteback.png')
     tags = models.ManyToManyField(Tag)
     hsn = models.CharField(_('HSN (GST)'), null=True, blank=True, max_length=20)
     desc = models.TextField(_('Description'), null=True, blank=True)

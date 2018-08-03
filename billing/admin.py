@@ -1,8 +1,9 @@
 from django.contrib import admin
 from .models import BillingHeader, BillItem
+from drfaddons.admin import CreateUpdateAdmin
 
 
-class MyModelAdmin(admin.ModelAdmin):
+class MyModelAdmin(CreateUpdateAdmin):
 
     fieldsets = (
         ('Customer Info', {
@@ -16,14 +17,6 @@ class MyModelAdmin(admin.ModelAdmin):
             'fields': ('created_by', 'update_date')
         }),
     )
-
-    def get_readonly_fields(self, request, obj=None):
-        """
-        Makes created_by & create_date readonly when editing.
-        """
-        if not obj:
-            return ()
-        return 'created_by', 'create_date'
 
 
 admin.site.register(BillingHeader, MyModelAdmin)

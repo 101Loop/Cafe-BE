@@ -1,10 +1,11 @@
 from django.contrib import admin
-from .models import Item, Tag, LunchPack, Store, HasItem, Cook
+from .models import *
+from drfaddons.admin import CreateUpdateAdmin
 
 
 # TODO: Show price info: subtotal, total, gst
 
-class ItemAdmin(admin.ModelAdmin):
+class ItemAdmin(CreateUpdateAdmin):
 
     list_display = ('name', 'category', 'price')
     search_fields = ('name', 'tags', 'category')
@@ -21,40 +22,26 @@ class ItemAdmin(admin.ModelAdmin):
             'fields': ('hsn', 'gst', 'gst_inclusive')
         }),
         ('advanced options', {
+            'classes': ('collaspe',),
             'fields': ('created_by', 'update_date')
         }),
     )
 
-    def get_readonly_fields(self, request, obj= None):
-        """
-        Makes created_by & create_date readonly when editing.
-        """
-        if not obj:
-            return ()
-        return 'created_by', 'create_date'
 
-
-class LunchPackAdmin(admin.ModelAdmin):
+class LunchPackAdmin(CreateUpdateAdmin):
 
     fieldsets = (
         (None, {
-            'fields': ('name','price', 'category', 'items')
+            'fields': ('name', 'price', 'category', 'items')
         }),
         ('advanced options', {
             'classes': ('collaspe', ),
             'fields': ('created_by', 'update_date')
         }),
     )
-    def get_readonly_fields(self, request, obj=None):
-        """
-        Makes created_by & create_date readonly when editing.
-        """
-        if not obj:
-            return ()
-        return 'created_by', 'create_date'
 
 
-class StoreAdmin(admin.ModelAdmin):
+class StoreAdmin(CreateUpdateAdmin):
 
     fieldsets = (
         (None, {
@@ -65,16 +52,9 @@ class StoreAdmin(admin.ModelAdmin):
             'fields': ('created_by', 'update_date')
         }),
     )
-    def get_readonly_fields(self, request, obj=None):
-        """
-        Makes created_by & create_date readonly when editing.
-        """
-        if not obj:
-            return ()
-        return 'created_by', 'create_date'
 
 
-class HasItemAdmin(admin.ModelAdmin):
+class HasItemAdmin(CreateUpdateAdmin):
 
     fieldsets = (
         (None, {
@@ -85,13 +65,6 @@ class HasItemAdmin(admin.ModelAdmin):
             'fields': ('created_by', 'update_date')
         }),
     )
-    def get_readonly_fields(self, request, obj=None):
-        """
-        Makes created_by & create_date readonly when editing.
-        """
-        if not obj:
-            return ()
-        return 'created_by', 'create_date'
 
 
 admin.site.register(Tag)
