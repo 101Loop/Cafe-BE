@@ -24,13 +24,19 @@ class BillingHeader(CreateUpdateModel):
 
     bill_date = models.DateTimeField(_('Bill Date'))
     due_date = models.DateField(_('Due Date'))
+
+    payment_mode = models.CharField(_('Mode of Payment'), choices=[('C', 'Cash'), ('I', 'Instamojo')], default='I',
+                                    max_length=3)
+    payment_id = models.TextField(_('Payment ID'), null=True, blank=True)
+    payment_done = models.BooleanField(_('Payment Done?'), default=False)
+
     name = models.CharField(_('Full Name'), max_length=500, null=True, blank=True)
     mobile = models.CharField(_('Mobile Number'), max_length=15, null=True, blank=True)
     email = models.EmailField(_('Email ID'), null=True, blank=True)
     store = models.ForeignKey(Store, on_delete=models.PROTECT)
     # TODO: auto generate these two on the basis of regex/pattern
-    order_no = models.CharField(_('Order Number'), max_length=20)#, default=number)
-    bill_no = models.CharField(_('Bill Number'), max_length=20)#, validators=[RegexValidator(regex='^[a-zA-Z0-9]*$')])
+    order_no = models.CharField(_('Order Number'), max_length=20) # default=number)
+    bill_no = models.CharField(_('Bill Number'), max_length=20) # validators=[RegexValidator(regex='^[a-zA-Z0-9]*$')])
 
     @property
     def subtotal(self):
@@ -81,3 +87,20 @@ class BillItem(models.Model):
     class Meta:
         verbose_name = _('Bill Item')
         verbose_name_plural = _('Bill Items')
+
+
+class InstamojoDetails(models.Model):
+    amount = models.DecimalField(_('Amount'), decimal_places=2, max_digits=10)
+    purpose = models.CharField(_('Purpose'), max_length=254)
+    redirect_url = models.URLField(_('Redirect URL'))
+    allow_repeated_payments = models.BooleanField(_('Allow Repeated Payment'), default=False)
+
+    payment_id = models.CharField(_('Payment ID'), max_length=254, null=True, blank=True)
+    payment_raw = models.TextField(_('Payment Raw Response'), null=True, blank=True)
+    status = models.CharField(_('Status'), max_length=10)
+
+    payment_request_id = models.TextField(_('Payment Request ID'), null=True, blank=True)
+    payment_request_raw = models.TextField(_('Payment Request Raw Response'), null=True, blank=True)
+    expires_at = models.CharField(_('Expires at'), max_length=30, blank=True, null=True)
+
+    bill = models.ForeignKey(BillingHeader, null=True, on_delete=models.PROTECT)
