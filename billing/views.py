@@ -169,7 +169,7 @@ class InstamojoRequestPaymentView(OwnerCreateAPIView):
                 raise SystemError('Instamojo Error! ' + json.dumps(imojo_request))
 
             data = serializer.data
-            data['longurl'] = obj.payment_request_raw['payment_request']['longurl']
+            data['longurl'] = imojo_request['payment_request']['longurl']
             data['payment_request_id'] = obj.payment_request_id
         return data
 
@@ -205,7 +205,7 @@ class InstamojoPaymentTrackView(RetrieveAPIView):
 
         self.perform_update(serializer)
         if instamojo_object.status == 'Completed':
-            signals.order_placed.send(bh=instamojo_object.bill, sender=None)
+            # signals.order_placed.send(bh=instamojo_object.bill, sender=None)
             return Response(ShowBillSerializer(instamojo_object.bill).data, status=202)
         else:
             data = {'message': 'Payment is still pending or has failed. Retry again.',
