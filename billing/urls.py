@@ -14,5 +14,5 @@ urlpatterns = [
     # ex: api/billing/payment/
     path('instamojo/request/', views.InstamojoRequestPaymentView.as_view(), name='Payment-Request'),
     # ex: api/billing/str/payment/
-    path('instamojo/<str:payment_request_id>/payment/', views.InstamojoPaymentTrackView.as_view(), name='Payment-Request'),
+    path('instamojo/<str:payment_request_id>/payment/', views.InstamojoPaymentTrackView.as_view(), name='Payment Request Track'),
 ]

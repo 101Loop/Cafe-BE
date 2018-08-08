@@ -90,6 +90,9 @@ class BillItem(models.Model):
 
 
 class InstamojoDetails(models.Model):
+    """
+    A InstamojoDetails model that includes the details of the payment made by the client.
+    """
     amount = models.DecimalField(_('Amount'), decimal_places=2, max_digits=10)
     purpose = models.CharField(_('Purpose'), max_length=254)
     redirect_url = models.URLField(_('Redirect URL'))
@@ -104,3 +107,7 @@ class InstamojoDetails(models.Model):
     expires_at = models.CharField(_('Expires at'), max_length=30, blank=True, null=True)
 
     bill = models.ForeignKey(BillingHeader, null=True, on_delete=models.PROTECT)
+
+    class Meta:
+        verbose_name = _('Instamojo Detail')
+        verbose_name_plural = _('Instamojo Details')

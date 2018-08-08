@@ -24,7 +24,8 @@ class ShowBillSerializer(serializers.ModelSerializer):
 
         model = BillingHeader
         fields = ('id', 'bill_date', 'due_date', 'name', 'mobile', 'email', 'store', 'order_no', 'bill_no', 'subtotal',
-                  'total', 'gst', 'billitem_set', 'create_date', 'created_by')
+                  'total', 'gst', 'billitem_set', 'create_date', 'created_by', 'payment_done', 'payment_mode',
+                  'payment_id')
 
 
 class AddBillItemSerializer(serializers.ModelSerializer):
@@ -46,7 +47,8 @@ class AddBillingHeaderSerializer(serializers.ModelSerializer):
         from .models import BillingHeader
 
         model = BillingHeader
-        fields = ('bill_date', 'due_date', 'name', 'mobile', 'email', 'store', 'order_no', 'bill_no', 'billitem_set')
+        fields = ('bill_date', 'due_date', 'name', 'mobile', 'email', 'store', 'order_no', 'bill_no', 'billitem_set',
+                  'payment_done', 'payment_mode', 'payment_id')
 
     def create(self, validated_data):
         from .models import BillingHeader, BillItem
@@ -59,7 +61,10 @@ class AddBillingHeaderSerializer(serializers.ModelSerializer):
 
 
 class RequestPaymentSerializer(serializers.ModelSerializer):
-
+    """
+    RequestPaymentSerializer is a model serializer which includes the details that are required
+    at the time of requesting payment.
+    """
     bill = AddBillingHeaderSerializer(many=False)
     allow_repeated_payments = serializers.BooleanField(default=False)
 
@@ -73,10 +78,8 @@ class RequestPaymentSerializer(serializers.ModelSerializer):
 
 class ShowRequestPaymentSerializer(serializers.ModelSerializer):
 
-    bill = ShowBillSerializer(many=False)
-
     class Meta:
         from .models import InstamojoDetails
 
         model = InstamojoDetails
-        fields = '__all__'
+        fields = ('payment_id', )
