@@ -12,6 +12,7 @@ class ShowItemView(ListAPIView):
     from django_filters.rest_framework import DjangoFilterBackend
     from rest_framework.filters import SearchFilter
     from .filters import MenuFiltering
+    from .paginations import CustomPageSizePagination
 
     # TODO: After in_stock implementation, require to select store first then show item.
 
@@ -19,6 +20,7 @@ class ShowItemView(ListAPIView):
     queryset = Item.objects.all().order_by('id')
     serializer_class = ShowItemSerializer
     filter_backends = (DjangoFilterBackend, SearchFilter)
+    pagination_class = CustomPageSizePagination
 
     filter_class = MenuFiltering
     search_fields = ('^name', '^tags__tag', '^category')

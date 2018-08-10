@@ -30,12 +30,13 @@ class PaymentRequest(models.Model):
             return self.payment_set.get(status='C').id
         return None
 
+    class Meta:
+        verbose_name = _('Payment Request')
+        verbose_name_plural = _('Payment Request')
 
 
 class Payment(models.Model):
-    """
-    A InstamojoDetails model that includes the details of the payment made by the client.
-    """
+
     id = models.CharField(_('Payment ID'), max_length=254, primary_key=True)
     instamojo_raw_response = models.TextField(_('Payment Raw Response'), null=True, blank=True)
     payment_request = models.ForeignKey(PaymentRequest, on_delete=models.PROTECT)
@@ -43,6 +44,9 @@ class Payment(models.Model):
     status = models.CharField(_('Status'), choices=[('C', 'Credit'), ('F', 'Failed')], default='F', max_length=3)
     fees = models.DecimalField(_('Fees by Instamojo'), max_digits=10, decimal_places=3, null=True)
     currency = models.CharField(_('Currency'), null=True, blank=True, max_length=50)
+
+    def __str__(self):
+        return self.id
 
     class Meta:
         verbose_name = _('Instamojo Payment')
