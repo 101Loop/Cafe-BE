@@ -24,7 +24,7 @@ class GetBillView(RetrieveAPIView):
     from .models import BillingHeader
     from .serializers import ShowBillSerializer
 
-    queryset = BillingHeader.objects.all()
+    queryset = BillingHeader.objects.all().order_by('-create_date')
     serializer_class = ShowBillSerializer
 
 
@@ -34,9 +34,7 @@ class ShowBillView(OwnerListAPIView):
     """
     from .models import BillingHeader
     from .serializers import ShowBillSerializer
-    # from .filters import BillingFilter
 
-    # filter_backends = (BillingFilter, )
     queryset = BillingHeader.objects.all().order_by('-create_date')
     serializer_class = ShowBillSerializer
 

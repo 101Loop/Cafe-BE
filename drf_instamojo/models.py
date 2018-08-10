@@ -31,6 +31,7 @@ class PaymentRequest(models.Model):
         return None
 
 
+
 class Payment(models.Model):
     """
     A InstamojoDetails model that includes the details of the payment made by the client.

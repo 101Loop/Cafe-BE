@@ -45,6 +45,7 @@ urlpatterns = [
     url(r'^api/restaurant/', include('restaurant.urls')),
     url(r'^api/billing/', include('billing.urls')),
     url(r'^api/users/', include('drf_user.urls')),
+    url(r'^api/instamojo/', include('drf_instamojo.urls')),
     url(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=None), name='schema-json'),
     url(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=None), name='schema-swagger-ui'),
     url(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=None), name='schema-redoc'),
