@@ -43,7 +43,6 @@ urlpatterns = [
     url(r'^jet/dashboard/', include('jet.dashboard.urls', 'jet-dashboard')),  # Django JET dashboard URLS
     url(r'^admin/', admin.site.urls),
     url(r'^api/restaurant/', include('restaurant.urls')),
-    # url(r'^api/offers/', include('offers.urls')),
     url(r'^api/billing/', include('billing.urls')),
     url(r'^api/users/', include('drf_user.urls')),
     url(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=None), name='schema-json'),

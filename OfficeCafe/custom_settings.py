@@ -7,10 +7,11 @@ CUSTOM_APPS = [
     'drfaddons',
     'restaurant.apps.RestaurantConfig',
     'billing.apps.BillingConfig',
-    'offers.apps.OffersConfig',
+    'drf_instamojo.apps.DrfInstamojoConfig',
     'drf_user',
     'drf_yasg',
 ]
+
 
 CUSTOM_MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware'

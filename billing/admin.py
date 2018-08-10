@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import BillingHeader, BillItem, InstamojoDetails
+from .models import BillingHeader, BillItem
 from drfaddons.admin import CreateUpdateAdmin
 
 
@@ -35,4 +35,3 @@ class InstamojoAdmin(admin.ModelAdmin):
 
 admin.site.register(BillingHeader, MyModelAdmin)
 admin.site.register(BillItem)
-admin.site.register(InstamojoDetails, InstamojoAdmin)
