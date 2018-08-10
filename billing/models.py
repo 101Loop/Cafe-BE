@@ -34,6 +34,7 @@ class BillingHeader(CreateUpdateModel):
     mobile = models.CharField(_('Mobile Number'), max_length=15, null=True, blank=True)
     email = models.EmailField(_('Email ID'), null=True, blank=True)
     store = models.ForeignKey(Store, on_delete=models.PROTECT)
+    mode = models.CharField(_('Mode of Payment'), max_length=10, choices=[('C', 'Cash'), ('I', 'Instamojo')])
     # TODO: auto generate these two on the basis of regex/pattern
     order_no = models.CharField(_('Order Number'), max_length=20) # default=number)
     bill_no = models.CharField(_('Bill Number'), max_length=20) # validators=[RegexValidator(regex='^[a-zA-Z0-9]*$')])
@@ -44,6 +45,7 @@ class BillingHeader(CreateUpdateModel):
         items = self.billitem_set.all()
         for item in items:
             sum += item.subtotal_price
+            sum = round(sum, 2)
         return sum
 
     @property

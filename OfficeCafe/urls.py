@@ -20,6 +20,9 @@ from drf_yasg import openapi
 from rest_framework import permissions
 
 
+admin.site.site_header = "OfficeCafe Administration | By CMT"
+admin.site.site_title = "OfficeCafe Administration | By CMT"
+
 schema_view = get_schema_view(
    openapi.Info(
       title="OfficeCafe API",

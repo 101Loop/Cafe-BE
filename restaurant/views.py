@@ -7,21 +7,21 @@ class ShowItemView(ListAPIView):
     """
     This view will show all the details of the items.
     """
-    from .models import HasItem, Store, Item
+    from .models import Item
     from .serializers import ShowItemSerializer
     from django_filters.rest_framework import DjangoFilterBackend
     from rest_framework.filters import SearchFilter
-    from .filters import RangeFiltering
+    from .filters import MenuFiltering
 
     # TODO: After in_stock implementation, require to select store first then show item.
 
     permission_classes = (AllowAny, )
-    queryset = Item.objects.all()#.filter(store_id=val).filter(in_stock=True).order_by('-create_date')
+    queryset = Item.objects.all().order_by('id')
     serializer_class = ShowItemSerializer
     filter_backends = (DjangoFilterBackend, SearchFilter)
 
-    filter_class = RangeFiltering
-    search_fields = ('^name', '^tag', '^category' )
+    filter_class = MenuFiltering
+    search_fields = ('^name', '^tags__tag', '^category')
 
 
 class ShowLunchPackView(ListAPIView):
