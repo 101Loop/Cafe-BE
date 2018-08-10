@@ -113,3 +113,6 @@ class InstamojoDetails(models.Model):
     class Meta:
         verbose_name = _('Instamojo Detail')
         verbose_name_plural = _('Instamojo Details')
+
+    def __str__(self):
+        return self.amount

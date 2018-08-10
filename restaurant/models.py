@@ -34,7 +34,9 @@ class Item(CreateUpdateModel):
     @property
     def subtotal(self):
         if self.gst_inclusive:
-            return self.price/(1+(self.gst/100))
+            subt = self.price/(1+(self.gst/100))
+            subt = round(subt, 2)
+            return subt
         else:
             return self.price
 
@@ -113,6 +115,7 @@ class Cook(CreateUpdateModel):
 
     class Meta:
         verbose_name = _('Cook')
+        verbose_name_plural = _('Cook')
 
 
 class Order(CreateUpdateModel):
