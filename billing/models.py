@@ -11,8 +11,7 @@ class BillingHeader(CreateUpdateModel):
     """
     from restaurant.models import Store
 
-    id = models.CharField(_('Bill Number'), max_length=254, primary_key=True, auto_created=True)
-    bill_date = models.DateTimeField(_('Bill Date'))
+    bill_date = models.DateTimeField(_('Bill Date'), auto_created=True)
     due_date = models.DateField(_('Due Date'))
 
     payment_mode = models.CharField(_('Mode of Payment'), choices=[('C', 'Cash'), ('I', 'Instamojo')], default='I',
@@ -35,7 +34,7 @@ class BillingHeader(CreateUpdateModel):
             if self.payment_mode == 'I':
                 pay_id = self.paymentrequest.id
             else:
-                pay_id = 'CASH' + self.bill_no
+                pay_id = 'CASH' + self.id
         return pay_id
 
     @property

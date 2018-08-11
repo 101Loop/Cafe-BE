@@ -66,7 +66,7 @@ def update_payments(payment_request):
             payment_request.status = imojo_payment_request['status']
             payment_request.save()
             status = 201
-        data = ShowBillSerializer(payment_request.bill)
+        data = ShowBillSerializer(payment_request.bill).data
     else:
         data = {'instamojo': imojo}
         status = 500
@@ -82,18 +82,27 @@ def create_payment_request_from_id(id, bill):
     imojo = get_imojo_obj()
     imojo = imojo.payment_request_status(id)
 
-    payment_request, created = PaymentRequest.objects.get_or_create(id=id)
-    payment_request.amount = imojo['amount']
-    payment_request.purpose = imojo['purpose']
-    payment_request.redirect_url = imojo['redirect_url']
-    payment_request.allow_repeated_payments = imojo['allow_repeated_payments']
-    payment_request.instamojo_raw_response = json.dumps(imojo)
-    payment_request.longurl = imojo['longurl']
-    payment_request.expires_at = imojo['expires_at']
-    payment_request.status = imojo['status']
-    payment_request.bill = bill
-    payment_request.save()
-    return payment_request
+    if imojo['success']:
+        imojo = imojo['payment_request']
+        try:
+            payment_request = PaymentRequest.objects.get(id=id)
+        except PaymentRequest.DoesNotExist:
+            payment_request = PaymentRequest()
+            payment_request.id = id
+        payment_request.amount = imojo['amount']
+        payment_request.purpose = imojo['purpose']
+        payment_request.redirect_url = imojo['redirect_url']
+        payment_request.allow_repeated_payments = imojo['allow_repeated_payments']
+        payment_request.instamojo_raw_response = json.dumps(imojo)
+        payment_request.longurl = imojo['longurl']
+        payment_request.expires_at = imojo['expires_at']
+        payment_request.status = imojo['status']
+        payment_request.bill = bill
+        payment_request.save()
+        return payment_request
+    else:
+        # TODO: this error should return in JSON Format
+        raise ValueError(imojo)
 
 
 class TokenView(APIView):
@@ -158,14 +167,17 @@ class CreatePaymentRequestView(CreateAPIView):
 
         from billing.signals import signals
 
-        bill = serializer.validated_data.pop('bill')
+        from billing.serializers import AddBillingHeaderSerializer
+
+        bill = AddBillingHeaderSerializer(data=serializer.initial_data.pop('bill'))
+        bill.is_valid(raise_exception=True)
 
         if self.request.user.is_authenticated:
             user = self.request.user
         else:
             user = get_user(bill.validated_data['email'], bill.validated_data['mobile'], bill.validated_data['name'])
 
-        bill.save(created_by=user)
+        bill = bill.save(created_by=user)
 
         amount = round(bill.total, 2)
 
@@ -182,16 +194,16 @@ class CreatePaymentRequestView(CreateAPIView):
             imojo = get_imojo_obj()
             imojo_request = imojo.payment_request_create(
                 purpose=serializer.validated_data['purpose'],
-                amount=amount, buyer_name=bill.instance.name, email=bill.instance.email, phone=bill.instance.mobile,
+                amount=amount, buyer_name=bill.name, email=bill.email, phone=bill.mobile,
                 redirect_url=serializer.validated_data['redirect_url'],
-                allow_repeated_payments=serializer.validated_data['allow_repeated_payments']
+                allow_repeated_payments=False
             )
 
             if imojo_request['success']:
                 request_id = imojo_request['payment_request']['id']
                 status_imojo = imojo_request['payment_request']['status']
                 serializer.save(instamojo_raw_response=json.dumps(imojo_request), id=request_id, status=status_imojo,
-                                bill=bill, longurl=imojo_request['payment_request']['longurl'])
+                                bill=bill, longurl=imojo_request['payment_request']['longurl'], amount=bill.total)
 
                 data = serializer.data
                 status = 201
@@ -206,10 +218,12 @@ class PaymentTrackView(RetrieveAPIView):
     from .models import PaymentRequest
 
     from rest_framework.permissions import AllowAny
+    from rest_framework.serializers import Serializer
 
     permission_classes = (AllowAny, )
     queryset = PaymentRequest.objects.all()
     filter_backends = ()
+    serializer_class = Serializer
 
     def retrieve(self, request, *args, **kwargs):
         import json
@@ -225,7 +239,7 @@ class PaymentTrackView(RetrieveAPIView):
         serializer.is_valid(raise_exception=True)
         instamojo_object = serializer.instance
 
-        if instamojo_object.bill.payment_done:
+        if instamojo_object.bill.paid:
             from billing.serializers import ShowBillSerializer
 
             return Response(ShowBillSerializer(instamojo_object.bill).data, status=202)
@@ -237,7 +251,7 @@ class PaymentTrackView(RetrieveAPIView):
         else:
             if status != 500:
                 data = {'message': 'Payment is still pending or has failed. Retry again.',
-                        'longurl': json.loads(instamojo_object.payment_request_raw)['payment_request']['longurl']}
+                        'longurl': json.loads(instamojo_object.instamojo_raw_response)['payment_request']['longurl']}
             return Response(data, status=status)
 
     def perform_update(self, serializer):
@@ -260,19 +274,32 @@ class AndroidCreatePaymentView(CreateAPIView):
     permission_classes = (AllowAny, )
     serializer_class = AndroidCreatePaymentSerializer
 
+    def create(self, request, *args, **kwargs):
+        from rest_framework.response import Response
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data, status = self.perform_create(serializer)
+        return Response(data, status=status)
+
     def perform_create(self, serializer):
         from billing.signals import signals
 
-        bill = serializer.validated_data.pop('bill')
+        from billing.serializers import AddBillingHeaderSerializer
+
+        bill = AddBillingHeaderSerializer(data=serializer.initial_data.pop('bill'))
+        bill.is_valid(raise_exception=True)
 
         if self.request.user.is_authenticated:
             user = self.request.user
         else:
             user = get_user(bill.validated_data['email'], bill.validated_data['mobile'], bill.validated_data['name'])
 
-        bill.save(created_by=user)
+        bill = bill.save(created_by=user)
 
-        payment_request = create_payment_request_from_id(serializer.validated_data.pop('id'), bill)
-        update_payments(payment_request)
+        payment_request = create_payment_request_from_id(serializer.validated_data.pop('payment_id'), bill)
+        data, status = update_payments(payment_request)
 
         signals.order_placed.send(bh=bill, sender=None)
+
+        return data, status

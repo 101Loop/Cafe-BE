@@ -7,13 +7,11 @@ class ShowItemSerializer(serializers.ModelSerializer):
     """
     tags = serializers.StringRelatedField(many=True)
     category = serializers.SerializerMethodField()
-    price = serializers.DecimalField(decimal_places=2, max_digits=10)
 
     class Meta:
         from .models import Item
         model = Item
-        fields = ('id', 'category', 'name', 'price', 'image', 'tags', 'hsn', 'desc', 'gst', 'gst_inclusive', 'subtotal',
-                  'total')
+        fields = ('id', 'category', 'name', 'image', 'tags', 'hsn', 'desc', 'gst', 'subtotal', 'total')
 
     def get_category(self, obj):
         return obj.get_category_display()

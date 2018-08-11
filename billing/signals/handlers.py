@@ -23,7 +23,7 @@ Greetings for eatings ^.^""" % (bh.store.name, bh.id, round(bh.total, 2))
     for itm in bh.billitem_set.all():
         items += '%s - %s' % (itm.item.name, itm.quantity)
 
-    if bh.payment_done:
+    if bh.paid:
         paid = 'Yes'
     else:
         paid = 'No'

@@ -10,7 +10,7 @@ class CreatePaymentRequestSerializer(serializers.ModelSerializer):
         from .models import PaymentRequest
 
         model = PaymentRequest
-        fields = ('purpose', 'redirect_url', 'bill')
+        fields = ('purpose', 'redirect_url', 'bill', 'longurl', 'id')
         read_only_fields = ('longurl', 'id')
 
 

@@ -10,7 +10,7 @@ urlpatterns = [
     # ex: api/instamojo/paymentrequest/
     path('paymentrequest/', views.CreatePaymentRequestView.as_view(), name='Payment Request'),
     # ex: api/instamojo/trackpayment/
-    path('trackpayment/', views.PaymentTrackView.as_view(), name='Track Payment'),
+    path('trackpayment/<str:pk>/', views.PaymentTrackView.as_view(), name='Track Payment'),
     # ex: api/instamojo/androidpayment/
     path('androidpayment/', views.AndroidCreatePaymentView.as_view(), name='Android Create Payment'),
 ]
