@@ -12,12 +12,12 @@ def placed_order(bh, **kwargs):
 Order Number: %s
 Total: %s :PENDING
 Pay at Store only.
-Greetings for eatings ^.^""" % (bh.store.name, bh.order_no, round(bh.total, 2))
+Greetings for eatings ^.^""" % (bh.store.name, bh.id, round(bh.total, 2))
     else:
         message = """You just placed an order at %s, Office Cafe.
 Order Number: %s
 Total Amount %s :PAID
-Greetings for eatings ^.^""" % (bh.store.name, bh.order_no, round(bh.total, 2))
+Greetings for eatings ^.^""" % (bh.store.name, bh.id, round(bh.total, 2))
 
     items = ''
     for itm in bh.billitem_set.all():
