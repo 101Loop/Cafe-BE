@@ -42,7 +42,7 @@ class ShowLunchPackView(ListAPIView):
 
 class ShowStoreView(ListAPIView):
     """
-    This view will show all the stores.
+    This view will show all the stores and its details.
     """
     from .models import Store
     from .serializers import ShowStoreSerializer
@@ -58,7 +58,7 @@ class ShowStoreView(ListAPIView):
 
 class AddItemView(OwnerCreateAPIView):
     """
-    This view will allow only the admin to add new items.
+    This view will allow only the admin to add new items to the menu.
     """
     from .serializers import AddItemSerializer
     from rest_framework.permissions import IsAdminUser
@@ -84,9 +84,30 @@ class ShowOrderView(ListAPIView):
 class UpdateFeedbackView(UpdateAPIView):
     """
     This view is to get the feedback from the user.
+    The user can also update the feedback anytime he/she wants.
     """
     from .models import Order
     from .serializers import UpdateFeedbackSerializer
 
     queryset = Order.objects.all()
     serializer_class = UpdateFeedbackSerializer
+
+
+class ShowTagView(ListAPIView):
+    """
+    This view is to show the tags of the items.
+    """
+    from .models import Tag
+    from .serializers import ShowTagSerializer
+    from django_filters.rest_framework import DjangoFilterBackend
+    from .paginations import CustomPageSizePagination
+    from .filters import TagFiltering
+    from rest_framework.filters import SearchFilter
+
+    filter_class = TagFiltering
+    pagination_class = CustomPageSizePagination
+    permission_classes = (AllowAny, )
+    filter_backends = (DjangoFilterBackend, SearchFilter)
+    queryset = Tag.objects.all().order_by('id')
+    serializer_class = ShowTagSerializer
+    search_fields = ('^tag', )

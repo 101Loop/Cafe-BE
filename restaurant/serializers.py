@@ -117,3 +117,12 @@ class UpdateFeedbackSerializer(serializers.ModelSerializer):
 
         model = Order
         fields = ('feedback', )
+
+
+class ShowTagSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        from .models import Tag
+
+        model = Tag
+        fields = ('tag', )
