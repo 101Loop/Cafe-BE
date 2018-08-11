@@ -34,6 +34,9 @@ class PaymentRequest(models.Model):
         verbose_name = _('Payment Request')
         verbose_name_plural = _('Payment Request')
 
+    def __str__(self):
+        return self.id
+
 
 class Payment(models.Model):
 

@@ -7,28 +7,14 @@ class MyModelAdmin(CreateUpdateAdmin):
 
     fieldsets = (
         ('Customer Info', {
-            'fields': ('name', 'mobile', 'email')
+            'fields': ('name', 'mobile', 'email', 'address')
         }),
         ('Bill Details', {
-            'fields': ('bill_date', 'due_date', 'store', 'order_no', 'bill_no')
+            'fields': ('id', 'bill_date', 'due_date', 'store', 'payment_mode', 'paid', 'order_mode')
         }),
         ('advanced options', {
             'classes': ('collaspe',),
             'fields': ('created_by', 'update_date')
-        }),
-    )
-
-
-class InstamojoAdmin(admin.ModelAdmin):
-
-    fieldsets = (
-        ('Payment Info', {
-            'fields': ('amount', 'purpose', 'status', 'payment_id')
-        }),
-        ('advanced options', {
-            'classes': ('collaspe',),
-            'fields': ('allow_repeated_payments', 'redirect_url', 'payment_raw',
-                       'payment_request_id', 'payment_request_raw', 'expires_at', 'bill')
         }),
     )
 
