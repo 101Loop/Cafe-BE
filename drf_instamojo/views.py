@@ -107,7 +107,7 @@ def create_payment_request_from_id(id, bill):
 
 class TokenView(APIView):
     """
-    This view is for payment gateway with Instamojo.
+    This view is for payment gateway integration with Instamojo.
     It will return a token that will be further used for payment request via instamojo.
     """
     from rest_framework.permissions import AllowAny
@@ -215,13 +215,16 @@ class CreatePaymentRequestView(CreateAPIView):
 
 
 class PaymentTrackView(RetrieveAPIView):
+    """
+    This view is to track the payment and return the response of whether payment is competed or not.
+    """
     from .models import PaymentRequest
 
     from rest_framework.permissions import AllowAny
     from rest_framework.serializers import Serializer
 
     permission_classes = (AllowAny, )
-    queryset = PaymentRequest.objects.all()
+    queryset = PaymentRequest.objects.all().order_by('-bill__create_date')
     filter_backends = ()
     serializer_class = Serializer
 
@@ -250,7 +253,7 @@ class PaymentTrackView(RetrieveAPIView):
             return Response(data, status=status)
         else:
             if status != 500:
-                data = {'message': 'Payment is still pending or has failed. Retry again.',
+                data = {'message': 'Payment is still pending or has failed. try again.',
                         'longurl': json.loads(instamojo_object.instamojo_raw_response)['payment_request']['longurl']}
             return Response(data, status=status)
 
@@ -264,8 +267,7 @@ class PaymentTrackView(RetrieveAPIView):
 
 class AndroidCreatePaymentView(CreateAPIView):
     """
-    This view will return a long url which will be used to fetch payment request id
-    which will be further used to track the payment request.
+    This view is for payment gateway integration for android.
     """
     from rest_framework.permissions import AllowAny
 

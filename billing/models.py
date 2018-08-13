@@ -18,9 +18,9 @@ class BillingHeader(CreateUpdateModel):
                                     max_length=3)
     paid = models.BooleanField(_('Bill Paid'), default=False)
 
-    name = models.CharField(_('Full Name'), max_length=500, null=True, blank=True)
-    mobile = models.CharField(_('Mobile Number'), max_length=15, null=True, blank=True)
-    email = models.EmailField(_('Email ID'), null=True, blank=True)
+    name = models.CharField(_('Full Name'), max_length=500)
+    mobile = models.CharField(_('Mobile Number'), max_length=15)
+    email = models.EmailField(_('Email ID'))
 
     order_mode = models.CharField(_('Order Mode'), choices=[('R', 'Dine In'), ('P', 'Pick Up'), ('D', 'Delivery')],
                                   max_length=3, default='R')

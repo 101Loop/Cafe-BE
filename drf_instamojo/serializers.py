@@ -2,6 +2,9 @@ from rest_framework import serializers
 
 
 class CreatePaymentRequestSerializer(serializers.ModelSerializer):
+    """
+    This model serializer includes the attributes required for creating longURL and payment request ID.
+    """
     from billing.serializers import AddBillingHeaderSerializer
 
     bill = AddBillingHeaderSerializer(many=False)
