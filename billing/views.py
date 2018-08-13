@@ -21,6 +21,9 @@ def get_user(email: str, mobile: str, name: str=None):
 
 
 class GetBillView(RetrieveAPIView):
+    """
+    This view will show the details of a particular bill using primary key of the bill.
+    """
     from .models import BillingHeader
     from .serializers import ShowBillSerializer
     from rest_framework.permissions import AllowAny
@@ -34,11 +37,18 @@ class GetBillView(RetrieveAPIView):
 
 class ShowBillView(OwnerListAPIView):
     """
-    This view will show the details of the bill.
+    This view will show the details of all the bills.
+    Only admin has access to it.
     """
     from .models import BillingHeader
     from .serializers import ShowBillSerializer
+    from rest_framework.permissions import IsAdminUser
+    from django_filters.rest_framework import DjangoFilterBackend
+    from restaurant.paginations import CustomPageSizePagination
 
+    pagination_class = CustomPageSizePagination
+    permission_classes = (IsAdminUser, )
+    filter_backends = (DjangoFilterBackend, )
     queryset = BillingHeader.objects.all().order_by('-create_date')
     serializer_class = ShowBillSerializer
 
