@@ -37,5 +37,5 @@ Item: %s""" % (bh.name, paid, round(bh.total, 2), bh.mobile, items)
     send_message(message, 'Order placed | Office Cafe', [bh.email], [bh.email])
     send_message(message, 'Order placed | Office Cafe', [bh.mobile], [bh.email])
 
-    send_message(store_message, 'Order placed | Office Cafe', ['me@himanshus.com'], ['me@himanshus.com'])
-    send_message(store_message, 'Order placed | Office Cafe', [bh.store.mobile], ['me@himanshus.com'])
+    send_message(store_message, 'Order placed | Office Cafe', ['admin@officecafe.in'], ['admin@officecafe.in'])
+    send_message(store_message, 'Order placed | Office Cafe', [bh.store.mobile], ['admin@officecafe.in'])

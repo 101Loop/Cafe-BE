@@ -47,7 +47,7 @@ class AddBillingHeaderSerializer(serializers.ModelSerializer):
         from .models import BillingHeader
 
         model = BillingHeader
-        fields = ('bill_date', 'due_date', 'name', 'mobile', 'email', 'store', 'billitem_set', 'paid', 'payment_mode',
+        fields = ('id', 'bill_date', 'due_date', 'name', 'mobile', 'email', 'store', 'billitem_set', 'paid', 'payment_mode',
                   'order_mode', 'address')
 
     def create(self, validated_data):

@@ -23,7 +23,11 @@ def get_user(email: str, mobile: str, name: str=None):
 class GetBillView(RetrieveAPIView):
     from .models import BillingHeader
     from .serializers import ShowBillSerializer
+    from rest_framework.permissions import AllowAny
+    from django_filters.rest_framework import DjangoFilterBackend
 
+    filter_backends = (DjangoFilterBackend ,)
+    permission_classes = (AllowAny, )
     queryset = BillingHeader.objects.all().order_by('-create_date')
     serializer_class = ShowBillSerializer
 
