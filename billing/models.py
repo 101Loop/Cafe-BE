@@ -34,7 +34,7 @@ class BillingHeader(CreateUpdateModel):
             if self.payment_mode == 'I':
                 pay_id = self.paymentrequest.id
             else:
-                pay_id = 'CASH' + self.id
+                pay_id = 'CASH' + str(self.id)
         return pay_id
 
     @property
@@ -43,8 +43,8 @@ class BillingHeader(CreateUpdateModel):
         items = self.billitem_set.all()
         for item in items:
             sum += item.subtotal_price
-            sum = round(sum, 2)
-        return sum
+        s = round(sum, 2)
+        return s
 
     @property
     def total(self):
@@ -52,11 +52,13 @@ class BillingHeader(CreateUpdateModel):
         items = self.billitem_set.all()
         for item in items:
             sum += item.total_price
-        return sum
+        s = round(sum, 2)
+        return s
 
     @property
     def gst(self):
-        return self.total - self.subtotal
+        gst_value = round((self.total - self.subtotal), 2)
+        return gst_value
 
     def __str__(self):
         return str(self.id) + ' | ' + str(self.name)
