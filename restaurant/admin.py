@@ -3,29 +3,39 @@ from .models import *
 from drfaddons.admin import CreateUpdateAdmin
 
 
-# TODO: Show price info: subtotal, total, gst
-
 class ItemAdmin(CreateUpdateAdmin):
 
-    list_display = ('name', 'category', 'price')
+    list_display = ('name', 'category', 'total')
     search_fields = ('name', 'tags', 'category')
     list_filter = ('tags', 'category')
-    readonly_fields = ('subtotal', 'total')
-    fieldsets = (
-        ('Main Section', {
-            'fields': ('name', 'price', 'image', 'desc')
-        }),
-        ('Taggings', {
-            'fields': ('category', 'tags')
-        }),
-        ('Good and Service Tax Information', {
-            'fields': ('hsn', 'gst', 'gst_inclusive')
-        }),
-        ('advanced options', {
-            'classes': ('collaspe',),
-            'fields': ('created_by', 'update_date')
-        }),
-    )
+    readonly_fields = ()
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj:
+            return super().get_readonly_fields(request, obj) + ('subtotal', 'total')
+        return super().get_readonly_fields(request, obj)
+
+    def get_fieldsets(self, request, obj=None):
+        fieldsets = (
+            ('Main Section', {
+                'fields': ('name', 'price', 'image', 'desc')
+            }),
+            ('Taggings', {
+                'fields': ('category', 'tags')
+            }),
+            ('Good and Service Tax Information', {
+                'fields': ('hsn', 'gst', 'gst_inclusive')
+            }),
+            ('advanced options', {
+                'classes': ('collapse',),
+                'fields': ('created_by', 'update_date')
+            }),
+        )
+
+        if obj:
+            fieldsets[2][1]['fields'] += ('subtotal', 'total')
+            return fieldsets
+        return fieldsets
 
 
 class LunchPackAdmin(CreateUpdateAdmin):
@@ -35,7 +45,7 @@ class LunchPackAdmin(CreateUpdateAdmin):
             'fields': ('name', 'price', 'category', 'items')
         }),
         ('advanced options', {
-            'classes': ('collaspe', ),
+            'classes': ('collapse', ),
             'fields': ('created_by', 'update_date')
         }),
     )
@@ -48,7 +58,7 @@ class StoreAdmin(CreateUpdateAdmin):
             'fields': ('name', 'mobile', 'landline', 'address', 'gst_number', 'assigned_to')
         }),
         ('advanced options', {
-            'classes': ('collaspe',),
+            'classes': ('collapse',),
             'fields': ('created_by', 'update_date')
         }),
     )
@@ -61,7 +71,7 @@ class HasItemAdmin(CreateUpdateAdmin):
             'fields': ('item', 'store', 'in_stock')
         }),
         ('advanced options', {
-            'classes': ('collaspe',),
+            'classes': ('collapse',),
             'fields': ('created_by', 'update_date')
         }),
     )

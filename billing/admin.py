@@ -10,10 +10,10 @@ class MyModelAdmin(CreateUpdateAdmin):
             'fields': ('name', 'mobile', 'email', 'address')
         }),
         ('Bill Details', {
-            'fields': ('id', 'bill_date', 'due_date', 'store', 'payment_mode', 'paid', 'order_mode')
+            'fields': ('bill_date', 'due_date', 'store', 'payment_mode', 'paid', 'order_mode')
         }),
         ('advanced options', {
-            'classes': ('collaspe',),
+            'classes': ('collapse',),
             'fields': ('created_by', 'update_date')
         }),
     )

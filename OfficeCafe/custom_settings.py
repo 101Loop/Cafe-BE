@@ -20,7 +20,6 @@ CUSTOM_MIDDLEWARE = [
 CORS_ORIGIN_WHITELIST = (
     'officecafe.in',
     'localhost:4200',
-    'localhost:4000',
 )
 
 
