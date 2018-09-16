@@ -298,10 +298,9 @@ class AndroidCreatePaymentView(CreateAPIView):
             user = get_user(bill.validated_data['email'], bill.validated_data['mobile'], bill.validated_data['name'])
 
         bill = bill.save(created_by=user)
+        signals.order_placed.send(bh=bill, sender=None)
 
         payment_request = create_payment_request_from_id(serializer.validated_data.pop('payment_id'), bill)
         data, status = update_payments(payment_request)
-
-        signals.order_placed.send(bh=bill, sender=None)
 
         return data, status

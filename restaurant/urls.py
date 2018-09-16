@@ -15,4 +15,5 @@ urlpatterns = [
     path('add/item/', views.AddItemView.as_view(), name='Add-Item'),
     # ex: api/restaurant/show/tag/
     path('show/tag/', views.ShowTagView.as_view(), name='Show Tag'),
+    path('show/section/', views.ShowSectionView.as_view(), name='Show Sections'),
 ]

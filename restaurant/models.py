@@ -4,7 +4,7 @@ from drfaddons.models import CreateUpdateModel
 
 
 class Tag(models.Model):
-    tag = models.CharField(_('Tag'), max_length=254)
+    tag = models.CharField(_('Tag'), max_length=254, unique=True)
 
     def __str__(self):
         return self.tag
@@ -12,6 +12,22 @@ class Tag(models.Model):
     class Meta:
         verbose_name = _('Tag')
         verbose_name_plural = _('Tags')
+
+
+class Section(models.Model):
+    name = models.CharField(_('Section'), max_length=254, unique=True)
+    desc = models.TextField(_('Description'), null=True, blank=True)
+
+    @property
+    def items(self):
+        return "https://llgm0gfd59.execute-api.ap-south-1.amazonaws.com/dev/api/restaurant/show/item?section=%d" % self.id
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _('Display Section')
+        verbose_name_plural = _('Display Sections')
 
 
 class Item(CreateUpdateModel):
@@ -24,6 +40,7 @@ class Item(CreateUpdateModel):
     image = models.URLField(_('Image URL'), max_length=254, null=True, blank=True,
                             default='https://officecafe.in/assets/images/logo_whiteback.png')
     tags = models.ManyToManyField(Tag)
+    sections = models.ManyToManyField(Section)
     hsn = models.CharField(_('HSN (GST)'), null=True, blank=True, max_length=20)
     desc = models.TextField(_('Description'), null=True, blank=True)
     gst = models.DecimalField(_('GST Percentage'), max_digits=5, decimal_places=2, default=5.00)

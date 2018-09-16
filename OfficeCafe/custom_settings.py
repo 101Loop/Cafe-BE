@@ -32,7 +32,6 @@ CORS_ALLOW_METHODS = (
     'PUT'
 )
 
-
 AUTHENTICATION_BACKENDS = ['drf_user.auth.MultiFieldModelBackend',]
 
 REST_FRAMEWORK = {

@@ -23,7 +23,35 @@ class ShowItemView(ListAPIView):
     pagination_class = CustomPageSizePagination
 
     filter_class = MenuFiltering
+    search_fields = ('^name', '^tags__tag', '^category', '^sections__name')
+
+
+class ShowSectionItemView(ListAPIView):
+    """
+    This view will show all the details of the items.
+    """
+    from .models import Item
+    from .serializers import ShowItemSerializer
+    from django_filters.rest_framework import DjangoFilterBackend
+    from rest_framework.filters import SearchFilter
+    from .filters import MenuFiltering
+    from .paginations import CustomPageSizePagination
+
+    # TODO: After in_stock implementation, require to select store first then show item.
+
+    permission_classes = (AllowAny, )
+    lookup_field = 'sections__id'
+    lookup_url_kwarg = 'sections'
+    queryset = Item.objects.all().order_by('id')
+    serializer_class = ShowItemSerializer
+    filter_backends = (DjangoFilterBackend, SearchFilter)
+    pagination_class = CustomPageSizePagination
+
+    filter_class = MenuFiltering
     search_fields = ('^name', '^tags__tag', '^category')
+
+    def get_queryset(self):
+        return self.queryset.filter(sections__id=self.kwargs.get('sections'))
 
 
 class ShowLunchPackView(ListAPIView):
@@ -111,3 +139,22 @@ class ShowTagView(ListAPIView):
     queryset = Tag.objects.all().order_by('id')
     serializer_class = ShowTagSerializer
     search_fields = ('^tag', )
+
+
+class ShowSectionView(ListAPIView):
+    """
+    This view is to show the section of the items.
+    """
+    from .models import Section
+    from .serializers import ShowSectionSerializer
+    from django_filters.rest_framework import DjangoFilterBackend
+    from .paginations import CustomPageSizePagination
+    from .filters import SectionFiltering
+    from rest_framework.filters import SearchFilter
+
+    filter_class = SectionFiltering
+    pagination_class = CustomPageSizePagination
+    permission_classes = (AllowAny, )
+    filter_backends = (DjangoFilterBackend, SearchFilter)
+    queryset = Section.objects.all().order_by('id')
+    serializer_class = ShowSectionSerializer

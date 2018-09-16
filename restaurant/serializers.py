@@ -1,17 +1,27 @@
 from rest_framework import serializers
 
 
+class ShowSectionSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        from .models import Section
+
+        model = Section
+        fields = ('name', 'id', 'desc', 'items')
+
+
 class ShowItemSerializer(serializers.ModelSerializer):
     """
     ShowItemSerializer is a model serializer to show the attributes of the item.
     """
     tags = serializers.StringRelatedField(many=True)
+    sections = ShowSectionSerializer(many=True)
     category = serializers.SerializerMethodField()
 
     class Meta:
         from .models import Item
         model = Item
-        fields = ('id', 'category', 'name', 'image', 'tags', 'hsn', 'desc', 'gst', 'subtotal', 'total')
+        fields = ('id', 'category', 'name', 'image', 'tags', 'sections', 'hsn', 'desc', 'gst', 'subtotal', 'total')
 
     def get_category(self, obj):
         return obj.get_category_display()
@@ -73,12 +83,13 @@ class AddItemSerializer(serializers.ModelSerializer):
             'gst_inclusive' : bool
     """
     tags = serializers.StringRelatedField(many=True)
+    sections = serializers.StringRelatedField(many=True)
 
     class Meta:
         from .models import Item
 
         model = Item
-        fields = ('category', 'name', 'price', 'image', 'tags', 'hsn', 'desc', 'gst', 'gst_inclusive')
+        fields = ('category', 'name', 'price', 'image', 'tags', 'sections', 'hsn', 'desc', 'gst', 'gst_inclusive')
 
 
 class ShowOrderSerializer(serializers.ModelSerializer):
