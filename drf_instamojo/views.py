@@ -132,29 +132,41 @@ class TokenView(APIView):
     def get(self, request, *args, **kwargs):
         from django.http.response import HttpResponse
 
+        from django.conf import settings
+
         import requests
         import json
 
-        client_id = "test_pIMCtGp8XxFpDoVPvHYffqDpQnMvkycO0v7"
-        client_secret = "test_cptumZ9rNX9TJOyS1WzveRqFfnw9wtDm4JCunScEuMmu1Sifu9Wp9xIocpAPcNMCqohvgqwI2QDs30PMVkLz5d" \
-                        "kCh1q2dmLE6y1ABeZa1ZuMRA3iDqSUIUg47om"
+        imojo = getattr(settings, 'INSTAMOJO', None)
 
-        if client_id.startswith("test"):
-            url = "https://test.instamojo.com/oauth2/token/"
-            env = "test"
+        if imojo:
+            if isinstance(imojo, dict):
+                client_id = getattr(imojo, 'CLIENT_ID', None)
+                client_secret = getattr(imojo, 'CLIENT_SECRET', None)
+                if client_id and client_secret:
+                    if client_id.startswith("test"):
+                        url = "https://test.instamojo.com/oauth2/token/"
+                        env = "test"
+                    else:
+                        env = "production"
+                        url = "https://www.instamojo.com/oauth2/token/"
+
+                    payload = "grant_type=client_credentials&client_id=" + client_id + "&client_secret=" + client_secret
+                    headers = {
+                        'content-type': "application/x-www-form-urlencoded",
+                        'cache-control': "no-cache"
+                    }
+
+                    response = requests.request("POST", url, data=payload, headers=headers)
+                    token = env + json.loads(response.text)['access_token']
+                    return HttpResponse(token)
+                else:
+                    raise NotImplementedError('INSTAMOJO settings are not defined. Kindly define: API_KEY, AUTH_TOKEN &'
+                                              'ENDPOINT')
+            else:
+                raise ValueError('INSTAMOJO settings must be a dict.')
         else:
-            env = "production"
-            url = "https://www.instamojo.com/oauth2/token/"
-
-        payload = "grant_type=client_credentials&client_id=" + client_id + "&client_secret=" + client_secret
-        headers = {
-            'content-type': "application/x-www-form-urlencoded",
-            'cache-control': "no-cache"
-        }
-
-        response = requests.request("POST", url, data=payload, headers=headers)
-        token = env + json.loads(response.text)['access_token']
-        return HttpResponse(token)
+            raise NotImplementedError('INSTAMOJO settings are not defined.')
 
 
 class CreatePaymentRequestView(CreateAPIView):

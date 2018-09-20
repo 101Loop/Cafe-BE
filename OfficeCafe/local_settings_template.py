@@ -27,5 +27,7 @@ HSPSMS = {
 INSTAMOJO = {
     'API_KEY': '',
     'AUTH_TOKEN': '',
-    'ENDPOINT': 'https://www.instamojo.com/api/1.1/'
+    'ENDPOINT': 'https://www.instamojo.com/api/1.1/',
+    'CLIENT_ID': '',
+    'CLIENT_SECRET': ''
 }
