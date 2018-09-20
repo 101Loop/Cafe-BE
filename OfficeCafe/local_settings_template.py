@@ -24,3 +24,8 @@ HSPSMS = {
     'SENDER': 'OFCAFE'
 }
 
+INSTAMOJO = {
+    'API_KEY': '',
+    'AUTH_TOKEN': '',
+    'ENDPOINT': 'https://www.instamojo.com/api/1.1/'
+}

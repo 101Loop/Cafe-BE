@@ -2,7 +2,6 @@ from rest_framework.generics import CreateAPIView, RetrieveAPIView
 from rest_framework.views import APIView
 
 
-# TODO: Import this from drfaddons
 def get_user(email: str, mobile: str, name: str=None):
     from django.contrib.auth import get_user_model
 
@@ -20,10 +19,26 @@ def get_user(email: str, mobile: str, name: str=None):
 
 
 def get_imojo_obj():
+    from django.conf import settings
+
     from instamojo_wrapper.api import Instamojo
 
-    return Instamojo(api_key='test_2e8398986827d0737f5ba3d3a20', auth_token='test_a3dea9627890cfbf323e8c894ef',
-                              endpoint='https://test.instamojo.com/api/1.1/')
+    imojo = getattr(settings, 'INSTAMOJO', None)
+
+    if imojo:
+        if isinstance(imojo, dict):
+            api_key = getattr(imojo, 'API_KEY', None)
+            auth_token = getattr(imojo, 'AUTH_TOKEN', None)
+            endpoint = getattr(imojo, 'ENDPOINT', None)
+            if api_key and auth_token and endpoint:
+                return Instamojo(api_key=api_key, auth_token=auth_token, endpoint=endpoint)
+            else:
+                raise NotImplementedError('INSTAMOJO settings are not defined. Kindly define: API_KEY, AUTH_TOKEN &'
+                                          'ENDPOINT')
+        else:
+            raise ValueError('INSTAMOJO settings must be a dict.')
+    else:
+        raise NotImplementedError('INSTAMOJO settings are not defined.')
 
 
 def update_payments(payment_request):
