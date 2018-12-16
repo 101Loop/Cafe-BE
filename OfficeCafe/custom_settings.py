@@ -2,12 +2,15 @@ import datetime
 
 
 CUSTOM_APPS = [
+    'outlet',
+    'location',
     'rest_framework',
     'corsheaders',
     'drfaddons',
-    'restaurant.apps.RestaurantConfig',
-    'billing.apps.BillingConfig',
-    'drf_instamojo.apps.DrfInstamojoConfig',
+    'restaurant',
+    'billing',
+    'drf_instamojo',
+    'drf_paytm',
     'drf_user',
     'drf_yasg',
 ]
@@ -64,12 +67,13 @@ REST_FRAMEWORK = {
 
 AUTH_USER_MODEL = 'drf_user.User'
 
+
 JWT_AUTH = {
     'JWT_ENCODE_HANDLER': 'rest_framework_jwt.utils.jwt_encode_handler',
 
     'JWT_DECODE_HANDLER': 'rest_framework_jwt.utils.jwt_decode_handler',
 
-    'JWT_PAYLOAD_HANDLER': 'drfaddons.auth.jwt_payload_handler',
+    'JWT_PAYLOAD_HANDLER': 'drf_user.auth.jwt_payload_handler',
 
     'JWT_PAYLOAD_GET_USER_ID_HANDLER': 'rest_framework_jwt.utils.jwt_get_user_id_from_payload_handler',
 
@@ -87,16 +91,14 @@ JWT_AUTH = {
     'JWT_AUDIENCE': None,
     'JWT_ISSUER': None,
 
-    # 'JWT_ALLOW_REFRESH': False,
-    # 'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=7),
+    'JWT_ALLOW_REFRESH': False,
+    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=7),
 
-    'JWT_AUTH_HEADER_PREFIX': '',
+    'JWT_AUTH_HEADER_PREFIX': 'Bearer',
     # 'JWT_AUTH_COOKIE': None,
 }
 
 JWT_AUTH_KEY = 'Authorization'
-
-USE_TZ = False
 
 TIME_ZONE = 'Asia/Kolkata'
 
@@ -137,23 +139,27 @@ JET_THEMES = [
     }
 ]
 
-USER_SETTINGS = {
+user_settings = {
     'DEFAULT_ACTIVE_STATE': True,
     'OTP': {
         'LENGTH': 4,
         'ALLOWED_CHARS': '1234567890',
         'VALIDATION_ATTEMPTS': 3,
         'SUBJECT': 'OTP for Verification',
-        'COOLING_PERIOD': 0
+        'COOLING_PERIOD': 3
     },
-    'MOBILE_VALIDATION': False,
-    'EMAIL_VALIDATION': False,
+    'MOBILE_VALIDATION': True,
+    'EMAIL_VALIDATION': True,
     'REGISTRATION': {
         'SEND_MAIL': True,
+        'SEND_MESSAGE': False,
         'MAIL_SUBJECT': 'Welcome to OfficeCafe',
+        'SMS_BODY': 'Your account has been created',
         'TEXT_MAIL_BODY': 'Your account has been created.',
-        'HTML_MAIL_BODY': 'Your account has been created.',
-        'SEND_SMS': True,
-        'SMS_BODY': 'Welcome to OfficeCafe. Your account has been created with us.'
+        'HTML_MAIL_BODY': 'Your account has been created.'
     }
 }
+
+MEDIA_ROOT = 'media/'
+
+MEDIA_URL = '/media/'

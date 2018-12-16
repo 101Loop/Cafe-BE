@@ -153,6 +153,3 @@ class Order(CreateUpdateModel):
     class Meta:
         verbose_name = _('Order')
         verbose_name_plural = _('Orders')
-
-
-# TODO: Add ingredients for items (Future)
