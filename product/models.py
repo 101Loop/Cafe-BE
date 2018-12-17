@@ -34,6 +34,8 @@ class Product(CreateUpdateModel):
     Author: Himanshu Shankar (https://himanshus.com)
     """
 
+    from OfficeCafe.variables import UOM_CHOICES, PLATE
+
     from taxation.models import Tax
 
     name = models.CharField(verbose_name=_("Product Name"), max_length=254,
@@ -60,6 +62,9 @@ class Product(CreateUpdateModel):
                                    default=False)
     combo_product = models.ManyToManyField(verbose_name=_("Combo Products"),
                                            to='Product', blank=True)
+
+    uom = models.CharField(verbose_name=_("Unit of Measurement"),
+                           max_length=15, choices=UOM_CHOICES, default=PLATE)
 
     @property
     def hsn(self)->str:
