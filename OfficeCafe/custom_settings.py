@@ -2,6 +2,8 @@ import datetime
 
 
 CUSTOM_APPS = [
+    'product',
+    'taxation',
     'outlet',
     'location',
     'rest_framework',
