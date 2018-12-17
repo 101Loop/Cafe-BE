@@ -4,88 +4,94 @@ from django.utils.text import gettext_lazy as _
 from drfaddons.models import CreateUpdateModel
 
 
-# TODO: Multiple payment adapters such as Instamojo
-class BillingHeader(CreateUpdateModel):
+class BillHeader(CreateUpdateModel):
     """
-    A custom BillingHeader model that includes the details of a bill.
+    Represents bill header in the system
+
+    Author: Himanshu Shankar (https://himanshus.com)
     """
-    from restaurant.models import Store
 
-    bill_date = models.DateTimeField(_('Bill Date'), auto_created=True)
-    due_date = models.DateField(_('Due Date'))
+    from OfficeCafe.variables import BILL_STATUS_CHOICES, PAYMENT_MODE_CHOICES
+    from OfficeCafe.variables import UNPAID, ON_COUNTER, PAYMENT_TYPE_CHOICES
+    from OfficeCafe.variables import CASH
 
-    payment_mode = models.CharField(_('Mode of Payment'), choices=[('C', 'Cash'), ('I', 'Instamojo')], default='I',
-                                    max_length=3)
-    paid = models.BooleanField(_('Bill Paid'), default=False)
+    from order.models import Order
 
-    name = models.CharField(_('Full Name'), max_length=500)
-    mobile = models.CharField(_('Mobile Number'), max_length=15)
-    email = models.EmailField(_('Email ID'))
-
-    order_mode = models.CharField(_('Order Mode'), choices=[('R', 'Dine In'), ('P', 'Pick Up'), ('D', 'Delivery')],
-                                  max_length=3, default='R')
-    address = models.TextField(_('Address'), null=True, blank=True)
-    store = models.ForeignKey(Store, on_delete=models.PROTECT)
+    order = models.ForeignKey(to=Order, on_delete=models.PROTECT,
+                              verbose_name=_("Order"))
+    status = models.CharField(verbose_name=_("Status"), max_length=5,
+                              choices=BILL_STATUS_CHOICES, default=UNPAID)
+    payment_type = models.CharField(verbose_name=_("Payment Type"),
+                                    choices=PAYMENT_TYPE_CHOICES,
+                                    default=ON_COUNTER, max_length=5)
+    payment_mode = models.CharField(verbose_name=_("Payment Mode"),
+                                    choices=PAYMENT_MODE_CHOICES,
+                                    default=CASH, max_length=5)
 
     @property
-    def payment_id(self):
-        pay_id = None
-        if self.paid:
-            if self.payment_mode == 'I':
-                pay_id = self.paymentrequest.id
-            else:
-                pay_id = 'CASH' + str(self.id)
-        return pay_id
+    def grand_total(self):
+        total = 0
+        for item in self.billitem_set.all():
+            total += item.total
+        return round(total, 2)
+
+    def __str__(self):
+        return f"{str(self.order)}'s payment"
+
+    class Meta:
+        verbose_name = _("Bill Header")
+        verbose_name_plural = _("Bill Headers")
+
+
+class BillItem(CreateUpdateModel):
+    """
+    Represents bill items
+
+    Author: Himanshu Shankar
+    """
+
+    from order.models import SubOrder
+
+    bill = models.ForeignKey(to=BillHeader, on_delete=models.PROTECT,
+                             verbose_name=_("Bill"))
+    suborder = models.ForeignKey(to=SubOrder, on_delete=models.PROTECT,
+                                 verbose_name=_("Sub Order"))
+    price = models.DecimalField(verbose_name=_("Price"), max_digits=10,
+                                decimal_places=2)
 
     @property
-    def subtotal(self):
-        sum = 0
-        items = self.billitem_set.all()
-        for item in items:
-            sum += item.subtotal_price
-        s = round(sum, 2)
-        return s
+    def sub_total(self):
+        return self.price * self.suborder.quantity
+
+    @property
+    def total_tax(self):
+        from django.db.models.aggregates import Sum
+
+        return self.billitemtax_set.aggregate(Sum('value'))['value__sum']
 
     @property
     def total(self):
-        sum = 0
-        items = self.billitem_set.all()
-        for item in items:
-            sum += item.total_price
-        s = round(sum, 2)
-        return s
-
-    @property
-    def gst(self):
-        gst_value = round((self.total - self.subtotal), 2)
-        return gst_value
+        return self.sub_total + self.total_tax
 
     def __str__(self):
-        return str(self.id) + ' | ' + str(self.name)
-
-    class Meta:
-        verbose_name = _('Billing Header')
-        verbose_name_plural = _('Billing Headers')
+        return str(self.suborder)
 
 
-class BillItem(models.Model):
-    from restaurant.models import Item
+class BillItemTax(models.Model):
+    """
+    Represents taxes on bill items
 
-    item = models.ForeignKey(Item, on_delete=models.PROTECT)
-    quantity = models.IntegerField(_('Quantity'))
-    billheader = models.ForeignKey(BillingHeader, on_delete=models.PROTECT)
-
-    @property
-    def subtotal_price(self):
-        return self.item.subtotal*self.quantity
-    
-    @property
-    def total_price(self):
-        return self.item.total*self.quantity
+    Author: Himanshu Shankar (https://himanshus.com)
+    """
+    name = models.CharField(verbose_name=_("Tax Name"), max_length=15)
+    value = models.DecimalField(verbose_name=_("Tax Value"), max_digits=10,
+                                decimal_places=2)
+    item = models.ForeignKey(to=BillItem, on_delete=models.PROTECT,
+                             verbose_name=_("Item"))
 
     def __str__(self):
-        return str(self.billheader) + ' | ' + str(self.item)
+        return f"{self.name} - {str(self.item)}"
 
     class Meta:
-        verbose_name = _('Bill Item')
-        verbose_name_plural = _('Bill Items')
+        verbose_name = _("Bill Item Tax")
+        verbose_name_plural = _("Bill Item Taxes")

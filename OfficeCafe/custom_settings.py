@@ -2,6 +2,8 @@ import datetime
 
 
 CUSTOM_APPS = [
+    'order',
+    'business',
     'product',
     'taxation',
     'outlet',
@@ -9,8 +11,6 @@ CUSTOM_APPS = [
     'rest_framework',
     'corsheaders',
     'drfaddons',
-    'restaurant',
-    'billing',
     'drf_instamojo',
     'drf_paytm',
     'drf_user',

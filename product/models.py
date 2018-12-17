@@ -58,11 +58,6 @@ class Product(CreateUpdateModel):
     o_hsn = models.CharField(verbose_name=_("Override HSN Code"),
                              max_length=6, null=True, blank=True)
 
-    is_combo = models.BooleanField(verbose_name=_("Is Combo Product?"),
-                                   default=False)
-    combo_product = models.ManyToManyField(verbose_name=_("Combo Products"),
-                                           to='Product', blank=True)
-
     uom = models.CharField(verbose_name=_("Unit of Measurement"),
                            max_length=15, choices=UOM_CHOICES, default=PLATE)
 
@@ -142,6 +137,96 @@ class Product(CreateUpdateModel):
     class Meta:
         verbose_name = _("Product")
         verbose_name_plural = _("Products")
+
+
+class ComboProduct(CreateUpdateModel):
+    """
+    Represents combo products in the system
+
+    Author: Himanshu Shankar (https://himanshus.com)
+    """
+
+    from taxation.models import Tax
+
+    from OfficeCafe.variables import UOM_CHOICES, PLATE
+
+    name = models.CharField(verbose_name=_("Combo Name"), max_length=254,
+                            unique=True)
+    combo_product = models.ManyToManyField(verbose_name=_("Combo Products"),
+                                           to=Product)
+    price = models.DecimalField(verbose_name=_("Price"), max_digits=10,
+                                decimal_places=3)
+    uom = models.CharField(verbose_name=_("Unit of Measurement"),
+                           max_length=15, choices=UOM_CHOICES, default=PLATE)
+    is_inclusive = models.BooleanField(verbose_name=_("Price inclusive of "
+                                                      "Tax?"), default=True)
+
+    interstate_tax = models.ManyToManyField(to=Tax, blank=True,
+                                            verbose_name=_("Inter-State Tax"),
+                                            related_name=_(
+                                                "combointerstate"))
+    instate_tax = models.ManyToManyField(to=Tax, blank=True,
+                                         verbose_name=_("In-State Tax"),
+                                         related_name=_("comboinstate"))
+
+    from_date = models.DateField(verbose_name=_("Valid From (Date)"),
+                                 null=True, blank=True)
+    to_date = models.DateField(verbose_name=_("Valid Till (Date)"),
+                               null=True, blank=True)
+    from_time = models.TimeField(verbose_name=_("Valid From (Time)"),
+                                 null=True, blank=True)
+    to_time = models.TimeField(verbose_name=_("Valid Till (Time)"),
+                               null=True, blank=True)
+
+    @property
+    def total_interstate_tax(self)->Decimal:
+        """
+        Provides total interstate tax
+
+        Returns
+        -------
+        Decimal
+
+        Author: Himanshu Shankar (https://himanshus.com)
+        """
+        from django.db.models.aggregates import Sum
+
+        total = self.interstate_tax.aggregate(Sum('percentage'))
+        total = total.get('percentage__sum')
+
+        if self.is_inclusive:
+            total = (self.price * (100+total))/100
+        else:
+            total = (total * self.price) / 100
+        return round(total, 2)
+
+    @property
+    def total_instate_tax(self)->Decimal:
+        """
+        Returns total instate tax
+        Returns
+        -------
+        Decimal
+
+        Author: Himanshu Shankar (https://himanshus.com)
+        """
+        from django.db.models.aggregates import Sum
+
+        total = self.instate_tax.aggregate(Sum('percentage'))
+        total = total.get('percentage__sum')
+
+        if self.is_inclusive:
+            total = (self.price * (100 + total)) / 100
+        else:
+            total = (total * self.price) / 100
+        return round(total, 2)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _("Combo Product")
+        verbose_name_plural = _("Combo Products")
 
 
 class ProductImage(CreateUpdateModel):

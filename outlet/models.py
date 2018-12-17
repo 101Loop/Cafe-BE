@@ -13,8 +13,12 @@ class Outlet(CreateUpdateModel):
 
     from location.models import City
 
+    from business.models import Business
+
     name = models.CharField(verbose_name=_("Name"), max_length=254,
                             unique=True)
+    business = models.ForeignKey(verbose_name=_("Business Owner"),
+                                 to=Business, on_delete=models.PROTECT)
     city = models.ForeignKey(verbose_name=_("City"), to=City,
                              on_delete=models.PROTECT)
     unit = models.CharField(verbose_name=_("Unit No"), max_length=254,
@@ -23,6 +27,13 @@ class Outlet(CreateUpdateModel):
                                 max_length=254)
     area = models.CharField(verbose_name=_("Sector / Area"), max_length=254)
     pincode = models.CharField(verbose_name=_("Pincode"), max_length=6)
+
+    is_active = models.BooleanField(verbose_name=_("Is Active?"),
+                                    default=True)
+
+    @property
+    def is_instate(self):
+        return self.business.state.id == self.city.state.id
 
     def __str__(self):
         return self.name
@@ -76,3 +87,83 @@ class OutletManager(CreateUpdateModel):
     class Meta:
         verbose_name = _("Outlet Manager")
         verbose_name_plural = _("Outlet Managers")
+
+
+class OutletProduct(CreateUpdateModel):
+    """
+    Represents products in an outlet
+
+    Author: Himanshu Shankar (https://himanshus.com)
+    """
+
+    from product.models import Product
+
+    product = models.ForeignKey(to=Product, on_delete=models.PROTECT,
+                                verbose_name=_("Product"))
+    outlet = models.ForeignKey(to=Outlet, on_delete=models.PROTECT,
+                               verbose_name=_("Outlet"))
+    stock = models.DecimalField(verbose_name=_("Stock"), max_digits=10,
+                                decimal_places=2)
+
+    @property
+    def mrp(self):
+        if self.product.is_inclusive:
+            return self.product.price
+        else:
+            if self.outlet.is_instate:
+                return self.product.price + self.product.total_instate_tax
+            else:
+                return self.product.price + self.product.total_interstate_tax
+
+    def __str__(self):
+        return f"{self.product.name in self.outlet.name}"
+
+    class Meta:
+        verbose_name = _("Outlet Product")
+        verbose_name_plural = _("Outlet Products")
+
+
+class OutletCombo(CreateUpdateModel):
+    """
+    Represents combos in an outlet
+
+    Author: Himanshu Shankar (https://himanshus.com)
+    """
+
+    from product.models import ComboProduct
+
+    combo = models.ForeignKey(to=ComboProduct, on_delete=models.PROTECT,
+                              verbose_name=_("Combo Product"))
+    outlet = models.ForeignKey(to=Outlet, on_delete=models.PROTECT,
+                               verbose_name=_("Outlet"))
+
+    @property
+    def outlet_product(self):
+        return self.outlet.outletproduct_set.filter(
+            product__in=self.combo.combo_product.all())
+
+    def clean_fields(self, exclude=None):
+        """
+        Checks if products in combo are already added in Outlet or not
+        Parameters
+        ----------
+        exclude
+
+        Raises
+        -------
+        ValidationError
+        """
+
+        from django.core.exceptions import ValidationError
+        error = {}
+
+        op = set(self.outlet.outletproduct_set.values_list('product',
+                                                           flat=True))
+        cp = set(self.combo.combo_product.all())
+
+        if len(op-cp) is not 0:
+            error['combo'] = _(f"Cannot add combo {self.combo.name} "
+                               f"to {self.outlet.name}. Not all combo's "
+                               f"product present in outlet.")
+            raise ValidationError(error)
+        return super(OutletCombo, self).clean_fields(exclude=exclude)
