@@ -21,7 +21,7 @@ class Discount(CreateUpdateModel):
                                         default=True)
 
     max_discount = models.DecimalField(verbose_name=_("Max Discount Value"),
-                                       max_digits=10, default=2)
+                                       max_digits=10, decimal_places=2)
     min_order_amount = models.DecimalField(verbose_name=_("Min Order Amount"),
                                            max_digits=10, decimal_places=2,
                                            default=0.00)

@@ -19,6 +19,8 @@ class State(models.Model):
                             unique=True)
     country = models.ForeignKey(verbose_name=_("Country"), to=Country,
                                 on_delete=models.PROTECT)
+    gst_code = models.CharField(verbose_name=_("GST Code"), max_length=2,
+                                unique=True)
 
     def __str__(self):
         return self.name

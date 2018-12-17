@@ -2,6 +2,9 @@ import datetime
 
 
 CUSTOM_APPS = [
+    'lead',
+    'comment',
+    'currency',
     'order',
     'business',
     'product',
