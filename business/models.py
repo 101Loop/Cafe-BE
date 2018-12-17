@@ -95,7 +95,8 @@ class BusinessDocument(CreateUpdateModel):
                               default=PENDING, max_length=5)
 
     def __str__(self):
-        return f"{self.business.name}'s {self.get_doc_type_display()}"
+        return "{business}'s {doc}".format(business=self.business.name,
+                                           doc=self.get_doc_type_display())
 
     class Meta:
         verbose_name = _("Business Document")

@@ -36,7 +36,7 @@ class BillHeader(CreateUpdateModel):
         return round(total, 2)
 
     def __str__(self):
-        return f"{str(self.order)}'s payment"
+        return "{order}'s payment".format(order=str(self.order))
 
     class Meta:
         verbose_name = _("Bill Header")
@@ -90,7 +90,7 @@ class BillItemTax(models.Model):
                              verbose_name=_("Item"))
 
     def __str__(self):
-        return f"{self.name} - {str(self.item)}"
+        return "{name} - {item}".format(name=self.name, item=str(self.item))
 
     class Meta:
         verbose_name = _("Bill Item Tax")

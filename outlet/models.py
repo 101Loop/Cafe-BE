@@ -82,7 +82,8 @@ class OutletManager(CreateUpdateModel):
     is_active = models.BooleanField(verbose_name=_("Is Active?"), default=True)
 
     def __str__(self):
-        return f"{self.manager.name} manages {self.outlet.name}"
+        return "{manager} manages {outlet}".format(manager=self.manager.name,
+                                                   outlet=self.outlet.name)
 
     class Meta:
         verbose_name = _("Outlet Manager")
@@ -116,7 +117,8 @@ class OutletProduct(CreateUpdateModel):
                 return self.product.price + self.product.total_interstate_tax
 
     def __str__(self):
-        return f"{self.product.name in self.outlet.name}"
+        return "{product} in {outlet}".format(product=self.product.name,
+                                              outlet=self.outlet.name)
 
     class Meta:
         verbose_name = _("Outlet Product")
@@ -162,8 +164,9 @@ class OutletCombo(CreateUpdateModel):
         cp = set(self.combo.combo_product.all())
 
         if len(op-cp) is not 0:
-            error['combo'] = _(f"Cannot add combo {self.combo.name} "
-                               f"to {self.outlet.name}. Not all combo's "
-                               f"product present in outlet.")
+            error['combo'] = _("Cannot add combo {combo} to {outlet}. Not "
+                               "all combo's product present in "
+                               "outlet.".format(combo=self.combo.name,
+                                                outlet=self.outlet.name))
             raise ValidationError(error)
         return super(OutletCombo, self).clean_fields(exclude=exclude)

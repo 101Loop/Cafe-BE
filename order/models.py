@@ -38,7 +38,7 @@ class Order(CreateUpdateModel):
         elif self.id:
             return str(self.id)
         else:
-            return f"{self.get_status_display()} Order"
+            return "{status} Order".format(status=self.get_status_display())
 
     class Meta:
         verbose_name = _("Order")
