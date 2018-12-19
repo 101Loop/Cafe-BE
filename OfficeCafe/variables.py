@@ -13,6 +13,7 @@ METER = "M"
 KILOMETER = "KM"
 MILLIMETER = "MM"
 GLASS = "GLS"
+CUP = "CP"
 
 UOM_CHOICES = (
     (GRAM, "Grams"),
@@ -24,6 +25,7 @@ UOM_CHOICES = (
     (KILOMETER, "Kilo Meters"),
     (MILLIMETER, "Milli Meters"),
     (GLASS, "Glasses"),
+    (CUP, "Cups"),
 )
 
 NEW = "N"

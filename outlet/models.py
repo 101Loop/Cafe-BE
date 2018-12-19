@@ -30,6 +30,8 @@ class Outlet(CreateUpdateModel):
 
     is_active = models.BooleanField(verbose_name=_("Is Active?"),
                                     default=True)
+    phone = models.CharField(verbose_name=_("Outlet Phone"), max_length=15,
+                             null=True, blank=True)
 
     @property
     def is_instate(self):

@@ -49,6 +49,7 @@ urlpatterns = [
 
     path('api/users/', include('drf_user.urls')),
     path('api/instamojo/', include('drf_instamojo.urls')),
+    path('api/outlet/', include('outlet.urls')),
 
     path('jet/', include('jet.urls', 'jet')),
     path('jet/dashboard/', include('jet.dashboard.urls', 'jet-dashboard')),

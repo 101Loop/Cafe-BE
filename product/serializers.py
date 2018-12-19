@@ -11,10 +11,11 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
+    category = CategorySerializer(many=False, read_only=True)
+
     class Meta:
         from .models import Product
 
         model = Product
-        fields = ('id', 'name', 'category', 'sku_code', 'hsn', 'uom',
-                  'is_combo', 'combo_product')
+        fields = ('id', 'name', 'category', 'sku_code', 'hsn', 'uom')
         read_only_fields = fields
