@@ -13,11 +13,16 @@ class Category(CreateUpdateModel):
     Author: Himanshu Shankar (https://himanshus.com)
     """
 
+    from OfficeCafe.variables import UOM_CHOICES
+
     name = models.CharField(verbose_name=_("Category Name"), max_length=254,
                             unique=True)
     sku_prefix = models.CharField(verbose_name=_("SKU Prefix"), max_length=4,
                                   unique=True)
     hsn = models.CharField(verbose_name=_("HSN Code"), max_length=6)
+    d_uom = models.CharField(verbose_name=_("Default Unit of Measurement"),
+                             choices=UOM_CHOICES, max_length=5, null=True,
+                             blank=True)
 
     def __str__(self)->str:
         return self.name
