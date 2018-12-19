@@ -12,3 +12,6 @@ python manage.py dumpdata order>backups/order.json
 python manage.py dumpdata outlet>backups/outlet.json
 python manage.py dumpdata product>backups/product.json
 python manage.py dumpdata taxation>backups/taxation.json
+python manage.py dumpdata drf_user>backups/users.json
+python manage.py dumpdata drf_paytm>backups/paytm.json
+python manage.py dumpdata drf_instamojo>backups/instamojo.json
