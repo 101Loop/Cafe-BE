@@ -22,8 +22,6 @@ from drf_yasg import openapi
 
 from rest_framework import permissions
 
-from .auth import OTPLoginView
-
 
 admin.site.site_header = "OfficeCafe Administration"
 admin.site.site_title = "OfficeCafe Administration"
@@ -50,7 +48,6 @@ urlpatterns = [
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=None),
          name='schema-redoc'),
 
-    path('api/users/otplogin/', OTPLoginView.as_view(), name='login-user'),
     path('api/users/', include('drf_user.urls')),
     path('api/instamojo/', include('drf_instamojo.urls')),
     path('api/outlet/', include('outlet.urls')),
