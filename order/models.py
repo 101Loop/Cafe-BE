@@ -30,7 +30,8 @@ class Order(CreateUpdateModel):
     status = models.CharField(verbose_name=_("Order Status"), max_length=5,
                               choices=STATUS_CHOICES, default=NEW)
     managed_by = models.ForeignKey(verbose_name=_("Outlet Manager"),
-                                   to=OutletManager, on_delete=models.PROTECT)
+                                   to=OutletManager, on_delete=models.PROTECT,
+                                   null=True, blank=True)
 
     def __str__(self)->str:
         if self.name:
