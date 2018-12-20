@@ -6,7 +6,7 @@ djangorestframework==3.9.0
 djangorestframework-jwt==1.11.0
 drf-instamojo==0.0.1
 drf-paytm==0.0.2
-drf-user==0.0.3
+drf-user==0.0.4
 drf-yasg==1.11.1
 drfaddons==0.1.1
 mysqlclient==1.3.14
