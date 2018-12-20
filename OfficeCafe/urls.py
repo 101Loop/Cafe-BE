@@ -27,15 +27,16 @@ admin.site.site_header = "OfficeCafe Administration"
 admin.site.site_title = "OfficeCafe Administration"
 
 schema_view = get_schema_view(
-   openapi.Info(
-      title="OfficeCafe API",
-      default_version='v1',
-      description="API based on DRF YASG for OfficeCafe",
-      contact=openapi.Contact(email="admin@officecafe.in"),
-      license=openapi.License(name="BSD License"),
-   ),
-   public=True,
-   permission_classes=(permissions.AllowAny,),
+    openapi.Info(
+        title="OfficeCafe API",
+        default_version='v1',
+        description="API based on DRF YASG for OfficeCafe",
+        contact=openapi.Contact(email="admin@officecafe.in"),
+        license=openapi.License(name="BSD License"),
+    ),
+    validators=['flex', 'ssv'],
+    public=True,
+    permission_classes=(permissions.AllowAny,),
 )
 
 

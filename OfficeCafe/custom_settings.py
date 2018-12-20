@@ -165,3 +165,11 @@ user_settings = {
         'HTML_MAIL_BODY': 'Your account has been created.'
     }
 }
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',
+        'TIMEOUT': 60,
+    }
+}
