@@ -1,3 +1,15 @@
-from django.shortcuts import render
+from drfaddons.generics import OwnerCreateAPIView
 
-# Create your views here.
+
+class CreateOrderView(OwnerCreateAPIView):
+    """
+    Creates an order in the system
+
+    Author: Himanshu Shankar (https://himanshus.com)
+    """
+
+    from .serializers import OrderSerializer
+    from .models import Order
+
+    serializer_class = OrderSerializer
+    queryset = Order.objects.all()

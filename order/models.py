@@ -65,6 +65,11 @@ class SubOrder(CreateUpdateModel):
     uom = models.CharField(verbose_name=_("Unit of Measurement"),
                            max_length=15, choices=UOM_CHOICES, default=PLATE)
 
+    @property
+    def sub_total(self):
+        op = self.order.outlet.outletproduct_set.get(product=self.item)
+        return self.quantity * op.mrp
+
     def __str__(self):
         return self.item.name
 

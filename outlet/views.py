@@ -1,5 +1,7 @@
 from rest_framework.generics import ListAPIView
 
+from django.utils.text import gettext_lazy as _
+
 
 class ListOutletView(ListAPIView):
     """
@@ -47,4 +49,21 @@ class ListOutletProductView(ListAPIView):
 
     queryset = OutletProduct.objects.filter(stock__gt=0)
     serializer_class = OutletProductSerializer
-    lookup_field = 'outlet__id'
+
+    def filter_queryset(self, queryset):
+        from rest_framework.exceptions import NotFound
+
+        from .models import Outlet
+
+        outlet_id = self.kwargs.get('outlet__id')
+        try:
+            outlet = Outlet.objects.get(pk=outlet_id)
+        except Outlet.DoesNotExist:
+            raise NotFound("Invalid Outlet ID {} - object does not "
+                           "exist.".format(outlet_id))
+        else:
+            return queryset.filter(outlet=outlet)
+
+
+class ListManagerOutletView(ListAPIView):
+    pass
