@@ -2,7 +2,9 @@ from rest_framework import serializers
 
 
 class PublicBusinessSerializer(serializers.ModelSerializer):
-    state = serializers.CharField(source='state.name', read_only=True)
+    from location.serializers import StateSerializer
+
+    state = StateSerializer(many=False)
 
     class Meta:
         from .models import Business

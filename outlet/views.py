@@ -1,4 +1,4 @@
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView
 
 from django.utils.text import gettext_lazy as _
 
@@ -58,6 +58,40 @@ class ListOutletProductView(ListAPIView):
         queryset = super(ListOutletProductView, self).filter_queryset(
             queryset=queryset)
         outlet_id = self.kwargs.get('outlet__id')
+        try:
+            outlet = Outlet.objects.get(pk=outlet_id)
+        except Outlet.DoesNotExist:
+            raise NotFound("Invalid Outlet ID {} - object does not "
+                           "exist.".format(outlet_id))
+        else:
+            return queryset.filter(outlet=outlet)
+
+
+class RetrieveProductView(RetrieveAPIView):
+    from rest_framework.permissions import AllowAny
+    from rest_framework.filters import SearchFilter
+
+    from django_filters.rest_framework.backends import DjangoFilterBackend
+
+    from .models import OutletProduct
+    from .serializers import OutletProductSerializer
+
+    permission_classes = (AllowAny, )
+    filter_backends = (DjangoFilterBackend, SearchFilter)
+
+    queryset = OutletProduct.objects.filter(stock__gt=0)
+    serializer_class = OutletProductSerializer
+
+    lookup_field = 'product_id'
+
+    def filter_queryset(self, queryset):
+        from rest_framework.exceptions import NotFound
+
+        from .models import Outlet
+
+        queryset = super(RetrieveProductView, self).filter_queryset(
+            queryset=queryset)
+        outlet_id = self.kwargs.get('outlet_id')
         try:
             outlet = Outlet.objects.get(pk=outlet_id)
         except Outlet.DoesNotExist:

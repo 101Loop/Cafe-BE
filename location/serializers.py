@@ -20,7 +20,7 @@ class StateSerializer(serializers.ModelSerializer):
 
 
 class CitySerializer(serializers.ModelSerializer):
-    state = StateSerializer(many=True, read_only=True)
+    state = StateSerializer(many=False, read_only=True)
 
     class Meta:
         from .models import City
