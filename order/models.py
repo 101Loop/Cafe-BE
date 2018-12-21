@@ -33,6 +33,14 @@ class Order(CreateUpdateModel):
                                    to=OutletManager, on_delete=models.PROTECT,
                                    null=True, blank=True)
 
+    @property
+    def total(self):
+        total = 0
+
+        for so in self.suborder_set.all():
+            total += so.sub_total
+        return round(total, 2)
+
     def __str__(self)->str:
         if self.name:
             return self.name

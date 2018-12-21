@@ -4,11 +4,16 @@ from django.utils.text import gettext_lazy as _
 
 
 class SubOrderSerializer(serializers.ModelSerializer):
+    from product.serializers import ProductSerializer
+
+    product = ProductSerializer(many=False, read_only=True)
+
     class Meta:
         from .models import SubOrder
 
         model = SubOrder
-        fields = ('id', 'item', 'quantity')
+        fields = ('id', 'item', 'product', 'quantity', 'sub_total')
+        read_only_fields = ('product', 'sub_total')
 
 
 class OrderSerializer(serializers.ModelSerializer):
@@ -51,5 +56,5 @@ class OrderSerializer(serializers.ModelSerializer):
 
         model = Order
         fields = ('id', 'name', 'mobile', 'email', 'outlet', 'status',
-                  'preparation_time', 'suborder_set')
-        read_only_fields = ('status', 'preparation_time')
+                  'preparation_time', 'suborder_set', 'total')
+        read_only_fields = ('status', 'preparation_time', 'total')
