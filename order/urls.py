@@ -1,11 +1,13 @@
 from django.urls import path
 
-from .views import CreateOrderView
+from .views import ListCreateOrderView, RetrieveOrderView
 
 
 app_name = "order"
 
 
 urlpatterns = [
-    path('order/', CreateOrderView.as_view(), name='order-add'),
+    path('order/', ListCreateOrderView.as_view(), name='order-list-add'),
+    path('order/<int:pk>', RetrieveOrderView.as_view(),
+         name='order-retrieve'),
 ]
