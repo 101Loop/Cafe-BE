@@ -55,6 +55,8 @@ class ListOutletProductView(ListAPIView):
 
         from .models import Outlet
 
+        queryset = super(ListOutletProductView, self).filter_queryset(
+            queryset=queryset)
         outlet_id = self.kwargs.get('outlet__id')
         try:
             outlet = Outlet.objects.get(pk=outlet_id)
