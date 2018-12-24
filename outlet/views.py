@@ -1,7 +1,5 @@
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 
-from django.utils.text import gettext_lazy as _
-
 
 class ListOutletView(ListAPIView):
     """
@@ -29,7 +27,7 @@ class ListOutletView(ListAPIView):
 
 class ListOutletProductView(ListAPIView):
     """
-    GET: Lists product available in a particular outlet
+    get: Lists product available in a particular outlet
 
     Author: Himanshu Shankar (https://himanshus.com)
     """
@@ -68,6 +66,9 @@ class ListOutletProductView(ListAPIView):
 
 
 class RetrieveProductView(RetrieveAPIView):
+    """
+    get: List details of a specific product.
+    """
     from rest_framework.permissions import AllowAny
     from rest_framework.filters import SearchFilter
 
@@ -102,4 +103,17 @@ class RetrieveProductView(RetrieveAPIView):
 
 
 class ListManagerOutletView(ListAPIView):
-    pass
+    """
+    get: Lists all the managers of an outlet.
+    """
+
+    from .permissions import OwnerOrManager
+    from .filters import IsOwnerOrManagerFilterBackend
+    from .models import OutletManager
+    from .serializers import OutletManagerSerializer
+
+    filter_backends = (IsOwnerOrManagerFilterBackend, )
+    permission_classes = (OwnerOrManager, )
+
+    queryset = OutletManager.objects.all()
+    serializer_class = OutletManagerSerializer

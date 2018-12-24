@@ -1,6 +1,6 @@
-from django.urls import include, path
+from django.urls import path
 
-from .views import ListOutletProductView, ListOutletView, RetrieveProductView
+from .views import ListOutletProductView, ListOutletView, RetrieveProductView, ListManagerOutletView
 
 app_name = "outlet"
 
@@ -12,4 +12,5 @@ urlpatterns = [
     path('public/<int:outlet_id>/<int:product_id>/',
          RetrieveProductView.as_view(),
          name="Retrieve Outlet Product"),
+    path('manager/', ListManagerOutletView.as_view(), name="List Managers"),
 ]
