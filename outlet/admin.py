@@ -31,3 +31,4 @@ class OutletAdmin(CreateUpdateAdmin):
 
 
 admin.site.register(Outlet, OutletAdmin)
+admin.site.register(OutletManager)

@@ -58,3 +58,12 @@ class OrderSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'mobile', 'email', 'outlet', 'status',
                   'preparation_time', 'suborder_set', 'total')
         read_only_fields = ('status', 'preparation_time', 'total')
+
+
+class OrderUpdateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        from .models import Order
+
+        model = Order
+        fields = ('status', )

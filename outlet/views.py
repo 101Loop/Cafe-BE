@@ -106,14 +106,13 @@ class ListManagerOutletView(ListAPIView):
     """
     get: Lists all the managers of an outlet.
     """
-
     from .permissions import OwnerOrManager
     from .filters import IsOwnerOrManagerFilterBackend
-    from .models import OutletManager
-    from .serializers import OutletManagerSerializer
+    from .models import Outlet
+    from .serializers import OutletSerializer
 
     filter_backends = (IsOwnerOrManagerFilterBackend, )
-    permission_classes = (OwnerOrManager, )
+    # permission_classes = (OwnerOrManager, )
 
-    queryset = OutletManager.objects.all()
-    serializer_class = OutletManagerSerializer
+    queryset = Outlet.objects.all()
+    serializer_class = OutletSerializer

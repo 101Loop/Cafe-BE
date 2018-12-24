@@ -33,14 +33,3 @@ class OutletProductSerializer(serializers.ModelSerializer):
 
         model = OutletProduct
         fields = ('id', 'name', 'category', 'sku_code', 'hsn', 'uom', 'mrp')
-
-
-class OutletManagerSerializer(serializers.ModelSerializer):
-
-    outlet = OutletSerializer(many=False)
-
-    class Meta:
-        from .models import OutletManager
-
-        model = OutletManager
-        fields = ('manager', 'outlet')
