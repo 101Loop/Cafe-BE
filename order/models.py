@@ -74,6 +74,10 @@ class SubOrder(CreateUpdateModel):
                            max_length=15, choices=UOM_CHOICES, default=PLATE)
 
     @property
+    def product(self):
+        return self.order.outlet.outletproduct_set.get(product=self.item)
+
+    @property
     def sub_total(self):
         op = self.order.outlet.outletproduct_set.get(product=self.item)
         return self.quantity * op.mrp

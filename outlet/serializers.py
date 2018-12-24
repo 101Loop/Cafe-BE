@@ -14,7 +14,7 @@ class OutletSerializer(serializers.ModelSerializer):
 
         model = Outlet
         fields = ('id', 'name', 'business', 'city', 'unit', 'building',
-                  'area', 'pincode')
+                  'area', 'pincode', 'phone')
         read_only_fields = fields
 
 
@@ -33,3 +33,16 @@ class OutletProductSerializer(serializers.ModelSerializer):
 
         model = OutletProduct
         fields = ('id', 'name', 'category', 'sku_code', 'hsn', 'uom', 'mrp')
+
+
+class PublicOutletManagerSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(source='manager.name', read_only=True)
+    mobile = serializers.CharField(source='manager.mobile', read_only=True)
+    email = serializers.CharField(source='manager.email', read_only=True)
+
+    class Meta:
+        from .models import OutletManager
+
+        model = OutletManager
+        fields = ('name', 'mobile', 'email')
+        read_only_fields = fields

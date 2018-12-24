@@ -50,10 +50,10 @@ urlpatterns = [
 
     path('api/users/', include('drf_user.urls')),
     path('api/instamojo/', include('drf_instamojo.urls')),
-    path('api/outlet/', include('outlet.urls')),
-    path('api/location/', include('location.urls')),
-    path('api/product/', include('product.urls')),
-    path('api/order/', include('order.urls')),
+    path('api/outlet/', include('outlet.urls', namespace='outlet')),
+    path('api/location/', include('location.urls', namespace='location')),
+    path('api/product/', include('product.urls', namespace='product')),
+    path('api/order/', include('order.urls', namespace='order')),
 
     path('jet/', include('jet.urls', 'jet')),
     path('jet/dashboard/', include('jet.dashboard.urls', 'jet-dashboard')),

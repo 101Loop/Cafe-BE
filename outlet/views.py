@@ -17,12 +17,24 @@ class ListOutletView(ListAPIView):
     permission_classes = (AllowAny, )
     filter_backends = (DjangoFilterBackend, SearchFilter)
     filter_fields = ('city__name', 'building', 'area', 'name', 'pincode',
-                     'unit')
+                     'unit', 'business', 'business__name', 'city')
     search_fields = ('city__name', 'building', 'area', 'name', 'pincode',
-                     'unit')
+                     'unit', 'business__name')
 
     queryset = Outlet.objects.filter(is_active=True)
     serializer_class = OutletSerializer
+
+
+class RetrieveOutletView(RetrieveAPIView):
+    from rest_framework.permissions import AllowAny
+
+    from .models import Outlet
+    from .serializers import OutletSerializer
+
+    permission_classes = (AllowAny, )
+    queryset = Outlet.objects.filter(is_active=True)
+    serializer_class = OutletSerializer
+    filter_backends = ()
 
 
 class ListOutletProductView(ListAPIView):
@@ -45,7 +57,7 @@ class ListOutletProductView(ListAPIView):
                      'product__category__name')
     search_fields = ('product__name', 'product__category__name', )
 
-    queryset = OutletProduct.objects.filter(stock__gt=0)
+    queryset = OutletProduct.objects.filter(stock__gt=0, outlet__is_active=True)
     serializer_class = OutletProductSerializer
 
     def filter_queryset(self, queryset):
@@ -57,7 +69,7 @@ class ListOutletProductView(ListAPIView):
             queryset=queryset)
         outlet_id = self.kwargs.get('outlet__id')
         try:
-            outlet = Outlet.objects.get(pk=outlet_id)
+            outlet = Outlet.objects.get(pk=outlet_id, is_active=True)
         except Outlet.DoesNotExist:
             raise NotFound("Invalid Outlet ID {} - object does not "
                            "exist.".format(outlet_id))
@@ -80,7 +92,7 @@ class RetrieveProductView(RetrieveAPIView):
     permission_classes = (AllowAny, )
     filter_backends = (DjangoFilterBackend, SearchFilter)
 
-    queryset = OutletProduct.objects.filter(stock__gt=0)
+    queryset = OutletProduct.objects.filter(stock__gt=0, outlet__is_active=True)
     serializer_class = OutletProductSerializer
 
     lookup_field = 'product_id'
@@ -94,7 +106,7 @@ class RetrieveProductView(RetrieveAPIView):
             queryset=queryset)
         outlet_id = self.kwargs.get('outlet_id')
         try:
-            outlet = Outlet.objects.get(pk=outlet_id)
+            outlet = Outlet.objects.get(pk=outlet_id, is_active=True)
         except Outlet.DoesNotExist:
             raise NotFound("Invalid Outlet ID {} - object does not "
                            "exist.".format(outlet_id))
@@ -107,12 +119,26 @@ class ListManagerOutletView(ListAPIView):
     get: Lists all the managers of an outlet.
     """
     from .permissions import OwnerOrManager
-    from .filters import IsOwnerOrManagerFilterBackend
     from .models import Outlet
     from .serializers import OutletSerializer
 
-    filter_backends = (IsOwnerOrManagerFilterBackend, )
+    from django_filters.rest_framework.backends import DjangoFilterBackend
+
+    from rest_framework.filters import SearchFilter
+
     permission_classes = (OwnerOrManager, )
 
     queryset = Outlet.objects.all()
     serializer_class = OutletSerializer
+    filter_backends = (DjangoFilterBackend, SearchFilter)
+    filter_fields = ('business', 'city', 'pincode', 'is_active')
+    search_fields = ('name', 'business__name', 'city__name', 'pincode',
+                     'building', 'area')
+
+    def filter_queryset(self, queryset):
+        from django.db.models import Q
+
+        queryset = super(ListManagerOutletView, self).filter_queryset(queryset)
+
+        return queryset.filter(Q(outletmanager__manager=self.request.user)
+                               | Q(created_by=self.request.user)).distinct()

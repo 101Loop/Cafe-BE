@@ -6,7 +6,7 @@ from drf_user.models import User
 def is_manager(user: User)->bool:
     from .models import OutletManager
 
-    return OutletManager.objects.filter(manager=user).count() > 0
+    return OutletManager.objects.filter(manager=user, is_active=True).count() > 0
 
 
 def is_owner(user: User)->bool:
@@ -20,17 +20,30 @@ class IsOwner(BasePermission):
     def has_permission(self, request, view)->bool:
         return super(IsOwner, self).has_permission(request, view) and is_owner(request.user)
 
+    def has_object_permission(self, request, view, obj):
+        from .models import Outlet
+
+        if isinstance(obj, Outlet):
+            return obj.created_by == request.user
+
 
 class OwnerOrManager(IsOwner):
 
     def has_permission(self, request, view):
-        return is_manager(request.user)
+        return super(OwnerOrManager, self).has_permission(
+            request=request, view=view) or is_manager(request.user)
 
     def has_object_permission(self, request, view, obj):
-        from .models import OutletManager
+        from .models import Outlet
+        from order.models import Order
 
-        if isinstance(obj, OutletManager):
-            if is_manager(request.user):
-                return request.user in obj.outlet.outletmanager_set.all()
-            if is_manager(request.user):
-                return request.user.id is obj.outlet.created_by_id
+        perm = super(OwnerOrManager, self).has_object_permission(request,
+                                                                 view, obj)
+
+        if isinstance(obj, Order):
+            obj = obj.outlet
+
+        if isinstance(obj, Outlet):
+            return perm or (request.user.id in obj.outletmanager_set
+                            .filter(is_active=True)
+                            .values_list('manager', flat=True))

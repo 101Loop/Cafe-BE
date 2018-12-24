@@ -1,4 +1,6 @@
-from drfaddons.generics import OwnerListCreateAPIView, OwnerRetrieveAPIView, OwnerUpdateAPIView
+from drfaddons.generics import OwnerListCreateAPIView, OwnerRetrieveAPIView
+
+from rest_framework.generics import ListAPIView, RetrieveUpdateAPIView
 
 
 class ListCreateOrderView(OwnerListCreateAPIView):
@@ -29,45 +31,41 @@ class RetrieveOrderView(OwnerRetrieveAPIView):
     queryset = Order.objects.all()
 
 
-class ListOutletOrderView(OwnerRetrieveAPIView):
-    """
-    get: Lists orders of an outlet.
-    """
-    from .serializers import OrderSerializer
+class ManagerOwnerMixin:
+    from .serializers import OrderUpdateSerializer
     from .models import Order
+
+    from outlet.permissions import OwnerOrManager
+
+    permission_classes = (OwnerOrManager, )
+    serializer_class = OrderUpdateSerializer
+    filter_backends = ()
+    queryset = Order.objects.all()
+
+
+class ListManagerOrderView(ManagerOwnerMixin, ListAPIView):
+    """
+    get: Lists orders for Manager
+    """
 
     from django_filters.rest_framework.backends import DjangoFilterBackend
 
-    from outlet.permissions import OwnerOrManager
-
-    queryset = Order.objects.all()
-    serializer_class = OrderSerializer
-
     filter_backends = (DjangoFilterBackend, )
-    permission_classes = (OwnerOrManager, )
+    filter_fields = ('outlet', 'status')
 
     def filter_queryset(self, queryset):
-        from outlet.models import Outlet
+        from django.db.models import Q
 
-        from rest_framework.exceptions import NotFound
+        queryset = super(ListManagerOrderView, self).filter_queryset(queryset=
+                                                                     queryset)
 
-        queryset = super(ListOutletOrderView, self).filter_queryset(queryset=queryset)
-        outlet_id = self.kwargs.get('outlet__id')
-        try:
-            outlet = Outlet.objects.get(pk=outlet_id)
-        except Outlet.DoesNotExist:
-            raise NotFound("Invalid Outlet ID {} - object does not "
-                           "exist.".format(outlet_id))
-        else:
-            return queryset.filter(outlet=outlet)
+        return queryset.filter(
+            Q(outlet__outletmanager__manager=self.request.user)
+            | Q(outlet__created_by=self.request.user))
 
 
-class UpdateOrderByManager(OwnerUpdateAPIView):
-
-    from .models import Order
-    from .serializers import OrderUpdateSerializer
-    from outlet.permissions import OwnerOrManager
-
-    queryset = Order.objects.all()
-    serializer_class = OrderUpdateSerializer
-    permission_classes = (OwnerOrManager, )
+class RetrieveUpdateOrderView(ManagerOwnerMixin, RetrieveUpdateAPIView):
+    def perform_update(self, serializer):
+        serializer.save(
+            managed_by=self.request.user.outletmanager_set.get(
+                outlet=serializer.instance.outlet))

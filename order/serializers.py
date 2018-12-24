@@ -4,9 +4,9 @@ from django.utils.text import gettext_lazy as _
 
 
 class SubOrderSerializer(serializers.ModelSerializer):
-    from product.serializers import ProductSerializer
+    from outlet.serializers import OutletProductSerializer
 
-    product = ProductSerializer(many=False, read_only=True)
+    product = OutletProductSerializer(many=False, read_only=True)
 
     class Meta:
         from .models import SubOrder
@@ -14,6 +14,9 @@ class SubOrderSerializer(serializers.ModelSerializer):
         model = SubOrder
         fields = ('id', 'item', 'product', 'quantity', 'sub_total')
         read_only_fields = ('product', 'sub_total')
+        extra_kwargs = {
+            "item": {"write_only": True}
+        }
 
 
 class OrderSerializer(serializers.ModelSerializer):
@@ -23,7 +26,17 @@ class OrderSerializer(serializers.ModelSerializer):
     Author: Himanshu Shankar (https://himanshus.com)
     """
 
+    from outlet.serializers import PublicOutletManagerSerializer
+    from outlet.models import Outlet
+
     suborder_set = SubOrderSerializer(many=True)
+    status = serializers.CharField(source='get_status_display', read_only=True)
+    managed_by = PublicOutletManagerSerializer(read_only=True, many=False)
+    outlet_id = serializers.PrimaryKeyRelatedField(
+        source='outlet', queryset=Outlet.objects.all(), write_only=True)
+    outlet = serializers.HyperlinkedRelatedField(
+        many=False, read_only=True, view_name='outlet:outlet-detail',
+        lookup_field='pk')
 
     def validate_suborder_set(self, value):
         if len(value) is 0:
@@ -55,15 +68,30 @@ class OrderSerializer(serializers.ModelSerializer):
         from .models import Order
 
         model = Order
-        fields = ('id', 'name', 'mobile', 'email', 'outlet', 'status',
-                  'preparation_time', 'suborder_set', 'total')
-        read_only_fields = ('status', 'preparation_time', 'total')
+        fields = ('id', 'name', 'mobile', 'email', 'status', 'outlet_id',
+                  'preparation_time', 'suborder_set', 'total', 'outlet',
+                  'managed_by')
+        read_only_fields = ('status', 'preparation_time', 'total',)
 
 
 class OrderUpdateSerializer(serializers.ModelSerializer):
+    from outlet.serializers import PublicOutletManagerSerializer
+    from outlet.models import Outlet
+
+    suborder_set = SubOrderSerializer(many=True)
+    managed_by = PublicOutletManagerSerializer(read_only=True, many=False)
+    outlet_id = serializers.PrimaryKeyRelatedField(
+        source='outlet', queryset=Outlet.objects.all(), write_only=True)
+    outlet = serializers.HyperlinkedRelatedField(
+        many=False, read_only=True, view_name='outlet:outlet-detail',
+        lookup_field='pk')
 
     class Meta:
         from .models import Order
 
         model = Order
-        fields = ('status', )
+        fields = ('id', 'name', 'mobile', 'email', 'status', 'outlet_id',
+                  'preparation_time', 'suborder_set', 'total', 'outlet',
+                  'managed_by')
+        read_only_fields = ('id', 'name', 'mobile', 'email', 'outlet_id',
+                            'suborder_set', 'total', 'outlet', 'managed_by')
