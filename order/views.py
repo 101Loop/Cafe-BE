@@ -70,4 +70,4 @@ class UpdateOrderByManager(OwnerUpdateAPIView):
 
     queryset = Order.objects.all()
     serializer_class = OrderUpdateSerializer
-    permission_classes = OwnerOrManager
+    permission_classes = (OwnerOrManager, )

@@ -112,7 +112,7 @@ class ListManagerOutletView(ListAPIView):
     from .serializers import OutletSerializer
 
     filter_backends = (IsOwnerOrManagerFilterBackend, )
-    # permission_classes = (OwnerOrManager, )
+    permission_classes = (OwnerOrManager, )
 
     queryset = Outlet.objects.all()
     serializer_class = OutletSerializer
