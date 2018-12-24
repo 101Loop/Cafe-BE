@@ -15,7 +15,13 @@ def is_owner(user: User)->bool:
     return Outlet.objects.filter(created_by=user).count() > 0
 
 
-class OwnerOrManager(BasePermission):
+class IsOwner(BasePermission):
+
+    def has_permission(self, request, view)->bool:
+        return super(IsOwner, self).has_permission(request, view) and is_owner(request.user)
+
+
+class OwnerOrManager(IsOwner):
 
     def has_permission(self, request, view):
         return is_manager(request.user)

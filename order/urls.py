@@ -14,6 +14,6 @@ urlpatterns = [
          name='order-retrieve'),
     # ex: api/order/public/id/orders/
     path('public/<int:outlet__id>/orders/', ListOutletOrderView.as_view(), name='Outlet Orders'),
-    # ex: api/order/order/id/
-    path('order/<order_id>/', UpdateOrderByManager.as_view(), name='Update Order'),
+    # ex: api/order/order/id/update/
+    path('order/<int:pk>/update/', UpdateOrderByManager.as_view(), name='Update Order'),
 ]
