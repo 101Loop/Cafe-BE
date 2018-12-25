@@ -1,4 +1,4 @@
-from rest_framework.permissions import BasePermission
+from rest_framework.permissions import IsAuthenticated
 
 from drf_user.models import User
 
@@ -15,35 +15,52 @@ def is_owner(user: User)->bool:
     return Outlet.objects.filter(created_by=user).count() > 0
 
 
-class IsOwner(BasePermission):
+class IsOutletOwner(IsAuthenticated):
 
     def has_permission(self, request, view)->bool:
-        return super(IsOwner, self).has_permission(request, view) and is_owner(request.user)
+        return super(IsOutletOwner, self).has_permission(request, view) and is_owner(request.user)
 
     def has_object_permission(self, request, view, obj):
         from .models import Outlet
 
-        if isinstance(obj, Outlet):
-            return obj.created_by == request.user
-
-
-class OwnerOrManager(IsOwner):
-
-    def has_permission(self, request, view):
-        return super(OwnerOrManager, self).has_permission(
-            request=request, view=view) or is_manager(request.user)
-
-    def has_object_permission(self, request, view, obj):
-        from .models import Outlet
         from order.models import Order
-
-        perm = super(OwnerOrManager, self).has_object_permission(request,
-                                                                 view, obj)
 
         if isinstance(obj, Order):
             obj = obj.outlet
 
         if isinstance(obj, Outlet):
-            return perm or (request.user.id in obj.outletmanager_set
-                            .filter(is_active=True)
-                            .values_list('manager', flat=True))
+            return obj.created_by == request.user
+
+
+class IsManager(IsAuthenticated):
+
+    def has_permission(self, request, view):
+        return (super(IsManager, self).has_permission(request=request,
+                                                      view=view)
+                and is_manager(request.user))
+
+    def has_object_permission(self, request, view, obj):
+        from .models import Outlet
+
+        from order.models import Order
+
+        if isinstance(obj, Order):
+            obj = obj.outlet
+
+        if isinstance(obj, Outlet):
+            return (request.user.id in obj.outletmanager_set
+                    .filter(is_active=True)
+                    .values_list('manager', flat=True))
+
+
+class OwnerOrManager(IsAuthenticated):
+
+    def has_permission(self, request, view):
+        return (IsOutletOwner().has_permission(request=request, view=view)
+                or IsManager().has_permission(request=request, view=view))
+
+    def has_object_permission(self, request, view, obj):
+        return (IsOutletOwner().has_object_permission(request=request,
+                                                      view=view, obj=obj)
+                or IsOutletOwner().has_object_permission(request=request,
+                                                         view=view, obj=obj))
