@@ -70,8 +70,8 @@ class OrderSerializer(serializers.ModelSerializer):
         model = Order
         fields = ('id', 'name', 'mobile', 'email', 'status', 'outlet_id',
                   'preparation_time', 'suborder_set', 'total', 'outlet',
-                  'managed_by')
-        read_only_fields = ('status', 'preparation_time', 'total',)
+                  'managed_by', 'create_date', 'update_date')
+        read_only_fields = ('status', 'preparation_time', 'total', 'create_date', 'update_date')
 
 
 class OrderUpdateSerializer(serializers.ModelSerializer):
