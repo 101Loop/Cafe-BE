@@ -50,6 +50,7 @@ class Order(CreateUpdateModel):
             return "{status} Order".format(status=self.get_status_display())
 
     class Meta:
+        ordering = ['-create_date', ]
         verbose_name = _("Order")
         verbose_name_plural = _("Orders")
 

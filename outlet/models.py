@@ -88,6 +88,7 @@ class OutletManager(CreateUpdateModel):
                                                    outlet=self.outlet.name)
 
     class Meta:
+        unique_together = ('manager', 'outlet')
         verbose_name = _("Outlet Manager")
         verbose_name_plural = _("Outlet Managers")
 

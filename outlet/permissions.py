@@ -62,5 +62,5 @@ class OwnerOrManager(IsAuthenticated):
     def has_object_permission(self, request, view, obj):
         return (IsOutletOwner().has_object_permission(request=request,
                                                       view=view, obj=obj)
-                or IsOutletOwner().has_object_permission(request=request,
-                                                         view=view, obj=obj))
+                or IsManager().has_object_permission(request=request,
+                                                     view=view, obj=obj))

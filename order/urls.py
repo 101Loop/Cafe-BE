@@ -1,7 +1,7 @@
 from django.urls import path
 
-from .views import ListCreateOrderView, RetrieveOrderView, ListManagerOrderView
-from .views import RetrieveUpdateOrderView
+from .views import ListOrderView, RetrieveOrderView, ListManagerOrderView
+from .views import RetrieveUpdateOrderView, CreateOrderView
 
 
 app_name = "order"
@@ -9,12 +9,12 @@ app_name = "order"
 
 urlpatterns = [
     # ex: api/order/order/
-    path('order/', ListCreateOrderView.as_view(), name='order-list-add'),
-    # ex: api/order/order/id/
-    path('order/<int:pk>/', RetrieveOrderView.as_view(),
-         name='order-retrieve'),
+    path('list/', ListOrderView.as_view(), name='order-list'),
+    path('create/', CreateOrderView.as_view(), name='order-add'),
+    # ex: api/order/id/
+    path('<int:pk>/', RetrieveOrderView.as_view(), name='order-retrieve'),
     # ex: api/order/order/id/update/
-    path('manager/order/', ListManagerOrderView.as_view(), name='List Order'),
+    path('manager/list/', ListManagerOrderView.as_view(), name='List Order'),
     path('manager/<int:pk>/', RetrieveUpdateOrderView.as_view(),
-         name='Update Order'),
+         name='order-update'),
 ]
