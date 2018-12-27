@@ -87,7 +87,7 @@ class OrderListSerializer(serializers.ModelSerializer):
         source='id', many=False, read_only=True,
         view_name='order:order-update', lookup_field='pk')
 
-    status = serializers.CharField(source='get_status_display')
+    status_display = serializers.CharField(source='get_status_display')
 
     phone = serializers.CharField(source='outlet.phone', read_only=True)
 
@@ -97,7 +97,7 @@ class OrderListSerializer(serializers.ModelSerializer):
         model = Order
         fields = ('id', 'name', 'mobile', 'email', 'status', 'create_date',
                   'preparation_time', 'total', 'outlet', 'managed_by',
-                  'update_date', 'phone', 'detail', 'update')
+                  'status_display', 'update_date', 'phone', 'detail', 'update')
         read_only_fields = fields
 
 
