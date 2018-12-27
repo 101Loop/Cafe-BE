@@ -46,6 +46,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsPostCsrfMiddleware',
+    'order.utils.MethodOverrideMiddleware',
 ]
 
 ROOT_URLCONF = 'OfficeCafe.urls'
