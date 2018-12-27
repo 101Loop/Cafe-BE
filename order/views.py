@@ -50,11 +50,16 @@ class ManagerOwnerMixin:
     from .serializers import OrderUpdateSerializer
     from .models import Order
 
+    from rest_framework.filters import SearchFilter
+
+    from django_filters.rest_framework.backends import DjangoFilterBackend
+
     from outlet.permissions import OwnerOrManager
 
     permission_classes = (OwnerOrManager, )
     serializer_class = OrderUpdateSerializer
-    filter_backends = ()
+    filter_backends = (DjangoFilterBackend, SearchFilter)
+    search_fields = ('name', 'mobile', 'email', 'status')
     queryset = Order.objects.all()
 
 
@@ -63,11 +68,8 @@ class ListManagerOrderView(ManagerOwnerMixin, ListAPIView):
     get: Lists orders for Manager
     """
 
-    from django_filters.rest_framework.backends import DjangoFilterBackend
-
     from .serializers import OrderListSerializer
 
-    filter_backends = (DjangoFilterBackend, )
     filter_fields = ('outlet', 'status')
     serializer_class = OrderListSerializer
 
