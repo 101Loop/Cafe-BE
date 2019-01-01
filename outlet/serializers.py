@@ -26,7 +26,7 @@ class OutletProductSerializer(serializers.ModelSerializer):
     category = CategorySerializer(source='product.category')
     sku_code = serializers.CharField(source='product.sku_code')
     hsn = serializers.CharField(source='product.hsn')
-    uom = serializers.CharField(source='product.get_uom_display')
+    uom = serializers.CharField(source='product.uom.name')
 
     class Meta:
         from .models import OutletProduct
