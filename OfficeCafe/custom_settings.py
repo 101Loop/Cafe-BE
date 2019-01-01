@@ -2,21 +2,28 @@ import datetime
 
 
 CUSTOM_APPS = [
-    'lead',
-    'comment',
-    'currency',
+    'stock',
     'order',
-    'business',
     'product',
-    'taxation',
+    'lead',
+
+    'warehouse',
     'outlet',
+    'business',
+
     'location',
+    'currency',
+    'taxation',
+    'comment',
+
     'rest_framework',
     'corsheaders',
+
     'drfaddons',
     'drf_instamojo',
     'drf_paytm',
     'drf_user',
+
     'drf_yasg',
 ]
 

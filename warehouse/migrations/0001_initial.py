@@ -10,44 +10,43 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
+        ('business', '0001_initial'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+        ('location', '0001_initial'),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Lead',
+            name='Warehouse',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('create_date', models.DateTimeField(auto_now_add=True, verbose_name='Create Date/Time')),
                 ('update_date', models.DateTimeField(auto_now=True, verbose_name='Date/Time Modified')),
-                ('name', models.CharField(max_length=254, verbose_name='Name')),
-                ('mobile', models.CharField(max_length=15, unique=True, verbose_name='Mobile')),
-                ('email', models.CharField(max_length=255, unique=True, verbose_name='Email')),
-                ('reference', models.TextField(blank=True, null=True, verbose_name='Referer Details')),
+                ('name', models.CharField(max_length=254, unique=True, verbose_name='Warehouse Name')),
+                ('address', models.TextField(verbose_name='Address')),
+                ('city', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='location.City', verbose_name='City')),
                 ('created_by', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to=settings.AUTH_USER_MODEL)),
+                ('owner', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='business.Business', verbose_name='Business Owner')),
             ],
             options={
-                'verbose_name': 'Lead',
-                'verbose_name_plural': 'Leads',
+                'verbose_name': 'Warehouse',
+                'verbose_name_plural': 'Warehouses',
             },
         ),
         migrations.CreateModel(
-            name='LeadStatus',
+            name='WarehouseManager',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('create_date', models.DateTimeField(auto_now_add=True, verbose_name='Create Date/Time')),
                 ('update_date', models.DateTimeField(auto_now=True, verbose_name='Date/Time Modified')),
-                ('name', models.CharField(max_length=154, unique=True, verbose_name='Status')),
+                ('is_active', models.BooleanField(default=True, verbose_name='Is Active?')),
                 ('created_by', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to=settings.AUTH_USER_MODEL)),
+                ('manager', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='manageswarehouse', to=settings.AUTH_USER_MODEL, verbose_name='Manager')),
+                ('warehouse', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='warehouse.Warehouse', verbose_name='Warehouse')),
             ],
             options={
-                'verbose_name': 'Status',
-                'verbose_name_plural': 'Statuses',
+                'verbose_name': 'Warehouse Manager',
+                'verbose_name_plural': 'Warehouse Managers',
             },
-        ),
-        migrations.AddField(
-            model_name='lead',
-            name='status',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='lead.LeadStatus', verbose_name='Lead Status'),
         ),
     ]

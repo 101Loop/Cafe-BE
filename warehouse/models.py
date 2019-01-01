@@ -45,3 +45,9 @@ class WarehouseManager(CreateUpdateModel):
     warehouse = models.ForeignKey(to=Warehouse, on_delete=models.PROTECT,
                                   verbose_name=_("Warehouse"))
 
+    def __str__(self):
+        return self.manager.name
+
+    class Meta:
+        verbose_name = _("Warehouse Manager")
+        verbose_name_plural = _("Warehouse Managers")

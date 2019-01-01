@@ -18,7 +18,7 @@ class MethodOverrideMiddleware:
 
         return response
 
-    def process_view(self, request):
+    def process_view(self, request, *args, **kwargs):
         if request.method != 'POST':
             return
         if METHOD_OVERRIDE_HEADER not in request.META:

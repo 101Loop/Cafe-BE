@@ -13,16 +13,16 @@ class Category(CreateUpdateModel):
     Author: Himanshu Shankar (https://himanshus.com)
     """
 
-    from OfficeCafe.variables import UOM_CHOICES
+    from stock.models import UnitOfMeasurementMaster
 
     name = models.CharField(verbose_name=_("Category Name"), max_length=254,
                             unique=True)
     sku_prefix = models.CharField(verbose_name=_("SKU Prefix"), max_length=4,
                                   unique=True)
     hsn = models.CharField(verbose_name=_("HSN Code"), max_length=6)
-    d_uom = models.CharField(verbose_name=_("Default Unit of Measurement"),
-                             choices=UOM_CHOICES, max_length=5, null=True,
-                             blank=True)
+    d_uom = models.ForeignKey(verbose_name=_("Default Unit of Measurement"),
+                              to=UnitOfMeasurementMaster,
+                              on_delete=models.PROTECT, null=True, blank=True)
 
     def __str__(self)->str:
         return self.name
@@ -39,7 +39,7 @@ class Product(CreateUpdateModel):
     Author: Himanshu Shankar (https://himanshus.com)
     """
 
-    from OfficeCafe.variables import UOM_CHOICES, PLATE
+    from stock.models import UnitOfMeasurementMaster
 
     from taxation.models import Tax
 
@@ -63,8 +63,9 @@ class Product(CreateUpdateModel):
     o_hsn = models.CharField(verbose_name=_("Override HSN Code"),
                              max_length=6, null=True, blank=True)
 
-    uom = models.CharField(verbose_name=_("Unit of Measurement"),
-                           max_length=15, choices=UOM_CHOICES, default=PLATE)
+    uom = models.ForeignKey(verbose_name=_("Unit of Measurement"),
+                            to=UnitOfMeasurementMaster,
+                            on_delete=models.PROTECT)
 
     @property
     def hsn(self)->str:
@@ -151,9 +152,9 @@ class ComboProduct(CreateUpdateModel):
     Author: Himanshu Shankar (https://himanshus.com)
     """
 
-    from taxation.models import Tax
+    from stock.models import UnitOfMeasurementMaster
 
-    from OfficeCafe.variables import UOM_CHOICES, PLATE
+    from taxation.models import Tax
 
     name = models.CharField(verbose_name=_("Combo Name"), max_length=254,
                             unique=True)
@@ -161,8 +162,9 @@ class ComboProduct(CreateUpdateModel):
                                            to=Product)
     price = models.DecimalField(verbose_name=_("Price"), max_digits=10,
                                 decimal_places=3)
-    uom = models.CharField(verbose_name=_("Unit of Measurement"),
-                           max_length=15, choices=UOM_CHOICES, default=PLATE)
+    uom = models.ForeignKey(verbose_name=_("Unit of Measurement"),
+                            to=UnitOfMeasurementMaster,
+                            on_delete=models.PROTECT)
     is_inclusive = models.BooleanField(verbose_name=_("Price inclusive of "
                                                       "Tax?"), default=True)
 

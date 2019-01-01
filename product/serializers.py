@@ -17,5 +17,5 @@ class ProductSerializer(serializers.ModelSerializer):
         from .models import Product
 
         model = Product
-        fields = ('id', 'name', 'category', 'sku_code', 'hsn', 'uom')
+        fields = ('id', 'name', 'category', 'sku_code', 'hsn', 'uom__name')
         read_only_fields = fields

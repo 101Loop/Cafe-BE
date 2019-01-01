@@ -62,8 +62,6 @@ class SubOrder(CreateUpdateModel):
     Author: Himanshu Shankar (https://himanshus.com)
     """
 
-    from OfficeCafe.variables import UOM_CHOICES, PLATE
-
     from product.models import Product
 
     order = models.ForeignKey(verbose_name=_("Order"), to=Order,
@@ -71,8 +69,6 @@ class SubOrder(CreateUpdateModel):
     item = models.ForeignKey(verbose_name=_("Product"), to=Product,
                              on_delete=models.PROTECT)
     quantity = models.PositiveIntegerField(verbose_name=_("Quantity"))
-    uom = models.CharField(verbose_name=_("Unit of Measurement"),
-                           max_length=15, choices=UOM_CHOICES, default=PLATE)
 
     @property
     def product(self):

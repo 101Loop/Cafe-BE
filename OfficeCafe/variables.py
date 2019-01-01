@@ -4,30 +4,6 @@ All static variables used in the system
 Author: Himanshu Shankar (https://himanshus.com)
 """
 
-GRAM = "G"
-KILOGRAM = "KG"
-PLATE = "PLT"
-LITRE = "L"
-MILLILITRE = "ML"
-METER = "M"
-KILOMETER = "KM"
-MILLIMETER = "MM"
-GLASS = "GLS"
-CUP = "CP"
-
-UOM_CHOICES = (
-    (GRAM, "Grams"),
-    (KILOGRAM, "Kilo Grams"),
-    (PLATE, "Plates"),
-    (LITRE, "Litres"),
-    (MILLILITRE, "Milli Litres"),
-    (METER, "Meters"),
-    (KILOMETER, "Kilo Meters"),
-    (MILLIMETER, "Milli Meters"),
-    (GLASS, "Glasses"),
-    (CUP, "Cups"),
-)
-
 NEW = "N"
 ACCEPTED = "A"
 REJECTED = "RJ"
