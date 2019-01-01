@@ -53,6 +53,7 @@ urlpatterns = [
     path('api/outlet/', include('outlet.urls', namespace='outlet')),
     path('api/location/', include('location.urls', namespace='location')),
     path('api/product/', include('product.urls', namespace='product')),
+    path('api/order/', include('order.urls', namespace='order')),
 
     path('jet/', include('jet.urls', 'jet')),
     path('jet/dashboard/', include('jet.dashboard.urls', 'jet-dashboard')),

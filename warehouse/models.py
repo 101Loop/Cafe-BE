@@ -3,6 +3,8 @@ from django.utils.text import gettext_lazy as _
 
 from drfaddons.models import CreateUpdateModel
 
+from stock.models import RawMaterialStock, StockCredit
+
 
 class Warehouse(CreateUpdateModel):
     """
@@ -51,3 +53,25 @@ class WarehouseManager(CreateUpdateModel):
     class Meta:
         verbose_name = _("Warehouse Manager")
         verbose_name_plural = _("Warehouse Managers")
+
+
+class WarehouseStock(RawMaterialStock):
+    warehouse = models.ForeignKey(to=Warehouse, on_delete=models.PROTECT,
+                                  verbose_name=_("Warehouse"))
+
+    def __str__(self):
+        return self.warehouse.name + " - " + self.raw_material.name
+
+    class Meta:
+        unique_together = ('warehouse', 'raw_material')
+        verbose_name = _("Warehouse Stock")
+        verbose_name_plural = _("Warehouse Stocks")
+
+
+class WarehouseInput(StockCredit):
+    stock = models.ForeignKey(to=WarehouseStock, on_delete=models.PROTECT,
+                              verbose_name=_("Stock"))
+
+    class Meta:
+        verbose_name = _("Warehouse Input")
+        verbose_name_plural = _("Warehouse Inputs")

@@ -56,10 +56,6 @@ class RawMaterialStock(CreateUpdateModel):
 
     Author: Himanshu Shankar (https://himanshus.com)
     """
-    from warehouse.models import Warehouse
-
-    warehouse = models.ForeignKey(to=Warehouse, on_delete=models.PROTECT,
-                                  verbose_name=_("Warehouse"))
     raw_material = models.ForeignKey(to=RawMaterialMaster,
                                      on_delete=models.PROTECT,
                                      verbose_name=_("Raw Material"))
@@ -71,13 +67,8 @@ class RawMaterialStock(CreateUpdateModel):
         return "{quant} {uom}".format(quant=str(self.quantity),
                                       uom=self.raw_material.uom.name)
 
-    def __str__(self):
-        return self.raw_material.name + " in " + self.warehouse.name
-
     class Meta:
-        unique_together = ('warehouse', 'raw_material')
-        verbose_name = _("Raw Material Stock in Warehouse")
-        verbose_name_plural = _("Raw Materials Stock in Warehouse")
+        abstract = True
 
 
 class StockCredit(CreateUpdateModel):
@@ -86,8 +77,6 @@ class StockCredit(CreateUpdateModel):
 
     Author: Himanshu Shankar (https://himanshus.com)
     """
-    stock = models.ForeignKey(to=RawMaterialStock, on_delete=models.PROTECT,
-                              verbose_name=_("Stock"))
     quantity = models.DecimalField(verbose_name=_("Quantity"),
                                    decimal_places=3, max_digits=10)
     date = models.DateField(verbose_name=_("Date of Input"))
@@ -100,8 +89,6 @@ class StockCredit(CreateUpdateModel):
                                  null=True, blank=True, max_length=254)
     other = models.TextField(verbose_name=_("Other details"), null=True,
                              blank=True)
-
-
 
     def __str__(self):
         return str(self.stock)
@@ -118,5 +105,4 @@ class StockCredit(CreateUpdateModel):
         self.stock.save()
 
     class Meta:
-        verbose_name = _("Raw Material Input")
-        verbose_name_plural = _("Raw Material Inputs")
+        abstract = True

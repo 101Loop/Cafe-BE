@@ -3,6 +3,8 @@ from django.utils.text import gettext_lazy as _
 
 from drfaddons.models import CreateUpdateModel
 
+from stock.models import RawMaterialStock, StockCredit
+
 
 class Outlet(CreateUpdateModel):
     """
@@ -124,6 +126,7 @@ class OutletProduct(CreateUpdateModel):
                                               outlet=self.outlet.name)
 
     class Meta:
+        unique_together = ('outlet', 'product')
         verbose_name = _("Outlet Product")
         verbose_name_plural = _("Outlet Products")
 
@@ -173,3 +176,64 @@ class OutletCombo(CreateUpdateModel):
                                                 outlet=self.outlet.name))
             raise ValidationError(error)
         return super(OutletCombo, self).clean_fields(exclude=exclude)
+
+
+class RawMaterialRequest(CreateUpdateModel):
+    """
+    Represents request for Raw Material in the system
+
+    Author: Himanshu Shankar (https://himanshus.com)
+    """
+
+    from stock.models import RawMaterialMaster
+
+    raw_material = models.ForeignKey(to=RawMaterialMaster,
+                                     on_delete=models.PROTECT,
+                                     verbose_name=_("Raw Material"))
+    quantity = models.DecimalField(verbose_name=_("Quantity"),
+                                   decimal_places=3, max_digits=10)
+    outlet = models.ForeignKey(to=Outlet, on_delete=models.PROTECT,
+                               verbose_name=_("Outlet"))
+    fulfilled_on = models.DateField(verbose_name=_("Fulfilled On?"),
+                                    help_text=_("When was this request "
+                                                "fulfilled?"),
+                                    null=True, blank=True)
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        super(RawMaterialRequest, self).save(force_insert=force_insert,
+                                             force_update=force_update,
+                                             using=using,
+                                             update_fields=update_fields)
+
+        # TODO: Check if OutletStock as this raw material
+        # TODO: Add an Outlet Procurement
+
+    def __str__(self):
+        return self.raw_material.name
+
+    class Meta:
+        verbose_name = _("Raw Material Request")
+        verbose_name_plural= _("Raw Material Requests")
+
+
+class OutletStock(RawMaterialStock):
+    outlet = models.ForeignKey(to=Outlet, on_delete=models.PROTECT,
+                               verbose_name=_("Outlet"))
+
+    def __str__(self):
+        return self.outlet.name + " - " + self.raw_material.name
+
+    class Meta:
+        unique_together = ('outlet', 'raw_material')
+        verbose_name = _("Outlet Stock")
+        verbose_name_plural = _("Outlet Stocks")
+
+
+class OutletProcurement(StockCredit):
+    stock = models.ForeignKey(to=OutletStock, on_delete=models.PROTECT,
+                              verbose_name=_("Stock"))
+
+    class Meta:
+        verbose_name = _("Outlet Procurement")
+        verbose_name_plural = _("Outlet Procurements")

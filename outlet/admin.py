@@ -3,6 +3,7 @@ from django.contrib import admin
 from drfaddons.admin import CreateUpdateAdmin
 
 from .models import Outlet, OutletImage, OutletManager, OutletProduct
+from .models import OutletProcurement, OutletStock
 
 
 class OutletProductInline(admin.StackedInline):
@@ -88,6 +89,15 @@ class OutletAdmin(CreateUpdateAdmin):
                 reverse("admin:outlet_outletproduct_add"), obj.id)
         return format_html(url)
     products.short_description = "Open Outlet Products"
+
+
+class OutletProcurementInline(admin.TabularInline):
+    model = OutletProcurement
+    extra = 0
+
+
+class OutletStockAdmin(CreateUpdateAdmin):
+    inlines = (OutletProcurementInline, )
 
 
 admin.site.register(Outlet, OutletAdmin)
