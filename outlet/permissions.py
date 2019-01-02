@@ -23,10 +23,15 @@ class IsOutletOwner(IsAuthenticated):
     def has_object_permission(self, request, view, obj):
         from .models import Outlet
 
+        from transaction.models import OrderPayment
+
         from order.models import Order
 
         if isinstance(obj, Order):
             obj = obj.outlet
+
+        if isinstance(obj, OrderPayment):
+            obj = obj.order.outlet
 
         if isinstance(obj, Outlet):
             return obj.created_by == request.user
@@ -42,10 +47,15 @@ class IsManager(IsAuthenticated):
     def has_object_permission(self, request, view, obj):
         from .models import Outlet
 
+        from transaction.models import OrderPayment
+
         from order.models import Order
 
         if isinstance(obj, Order):
             obj = obj.outlet
+
+        if isinstance(obj, OrderPayment):
+            obj = obj.order.outlet
 
         if isinstance(obj, Outlet):
             return (request.user.id in obj.outletmanager_set

@@ -14,6 +14,8 @@ class OrderPayment(CreateUpdateModel):
 
     from order.models import Order
 
+    from outlet.models import OutletManager
+
     order = models.ForeignKey(to=Order, on_delete=models.PROTECT,
                               verbose_name=_("Order"))
     amount = models.DecimalField(verbose_name=_("Amount"), max_digits=10,
@@ -28,6 +30,11 @@ class OrderPayment(CreateUpdateModel):
     payment_mode = models.CharField(verbose_name=_("Payment Mode"),
                                     choices=PAYMENT_MODE_CHOICES,
                                     default=CASH, max_length=5)
+
+    accepted_by = models.ForeignKey(to=OutletManager,
+                                    on_delete=models.PROTECT,
+                                    verbose_name=_("Payment Accepted By"),
+                                    null=True, blank=True)
 
     def __str__(self):
         return str(self.order) + " - " + str(self.amount)

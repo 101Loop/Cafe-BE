@@ -55,6 +55,9 @@ urlpatterns = [
     path('api/product/', include('product.urls', namespace='product')),
     path('api/order/', include('order.urls', namespace='order')),
 
+    path('api/transaction/', include('transaction.urls',
+                                    namespace='transaction')),
+
     path('jet/', include('jet.urls', 'jet')),
     path('jet/dashboard/', include('jet.dashboard.urls', 'jet-dashboard')),
     path('', admin.site.urls),
