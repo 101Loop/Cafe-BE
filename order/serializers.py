@@ -133,7 +133,7 @@ class OrderListSerializer(serializers.ModelSerializer):
         model = Order
         fields = ('id', 'name', 'mobile', 'email', 'status', 'create_date',
                   'preparation_time', 'total', 'outlet', 'managed_by',
-                  'status_display', 'update_date', 'phone', 'detail', 'update'
+                  'status_display', 'update_date', 'phone', 'detail', 'update',
                   'delivery_type', 'payment_done')
         read_only_fields = fields
 
