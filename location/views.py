@@ -51,3 +51,39 @@ class ListCityView(ListAPIView):
     filter_backends = (DjangoFilterBackend, SearchFilter)
     filter_fields = ('state__country__name', 'state__name')
     search_fields = ('name', 'state__country__name', 'state__name')
+
+
+class ListAreaView(ListAPIView):
+    from rest_framework.permissions import AllowAny
+    from rest_framework.filters import SearchFilter
+
+    from django_filters.rest_framework.backends import DjangoFilterBackend
+
+    from .models import Area
+    from .serializers import AreaSerializer
+
+    permission_classes = (AllowAny, )
+    queryset = Area.objects.all()
+    serializer_class = AreaSerializer
+
+    filter_backends = (DjangoFilterBackend, SearchFilter)
+    filter_fields = ('city', 'city__name', 'pincode')
+    search_fields = ('name', 'pincode', 'city__name')
+
+
+class ListBuildingComplexView(ListAPIView):
+    from rest_framework.permissions import AllowAny
+    from rest_framework.filters import SearchFilter
+
+    from django_filters.rest_framework.backends import DjangoFilterBackend
+
+    from .models import BuildingComplex
+    from .serializers import BuildingComplexSerializer
+
+    permission_classes = (AllowAny,)
+    queryset = BuildingComplex.objects.all()
+    serializer_class = BuildingComplexSerializer
+
+    filter_backends = (DjangoFilterBackend, SearchFilter)
+    filter_fields = ('area', 'area__name')
+    search_fields = ('name', 'area', 'area__name', 'area__pincode')

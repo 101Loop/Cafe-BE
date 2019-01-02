@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import City, State, Country
+from .models import City, State, Country, Area, BuildingComplex
 
 
 class CountryAdmin(admin.ModelAdmin):
@@ -23,3 +23,5 @@ class CityAdmin(admin.ModelAdmin):
 admin.site.register(Country, CountryAdmin)
 admin.site.register(State, StateAdmin)
 admin.site.register(City, CityAdmin)
+admin.site.register(Area)
+admin.site.register(BuildingComplex)

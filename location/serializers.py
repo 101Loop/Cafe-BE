@@ -27,3 +27,23 @@ class CitySerializer(serializers.ModelSerializer):
 
         model = City
         fields = ('id', 'name', 'state')
+
+
+class AreaSerializer(serializers.ModelSerializer):
+    city = CitySerializer(many=False, read_only=True)
+
+    class Meta:
+        from .models import Area
+
+        model = Area
+        fields = ('id', 'name', 'city', 'pincode')
+
+
+class BuildingComplexSerializer(serializers.ModelSerializer):
+    area = AreaSerializer(many=False, read_only=True)
+
+    class Meta:
+        from .models import BuildingComplex
+
+        model = BuildingComplex
+        fields = ('id', 'name', 'area')

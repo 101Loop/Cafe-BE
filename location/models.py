@@ -41,3 +41,32 @@ class City(models.Model):
     class Meta:
         verbose_name = _("City")
         verbose_name_plural = _("Cities")
+
+
+class Area(models.Model):
+    name = models.CharField(verbose_name=_("Area Name"), max_length=254)
+    city = models.ForeignKey(verbose_name=_("City"), to=City,
+                             on_delete=models.PROTECT)
+    pincode = models.CharField(verbose_name=_("PIN Code"), max_length=6)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _("Area")
+        verbose_name_plural = _("Areas")
+
+
+class BuildingComplex(models.Model):
+    name = models.CharField(verbose_name=_("Building / Society Complex"),
+                            max_length=250)
+    area = models.ForeignKey(verbose_name=_("Area"), to=Area,
+                             on_delete=models.PROTECT)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        unique_together = ('name', 'area')
+        verbose_name = _("Building Complex")
+        verbose_name_plural = _("Building Complexes")
