@@ -13,7 +13,7 @@ class Outlet(CreateUpdateModel):
     Author: Himanshu Shankar (https://himanshus.com)
     """
 
-    from location.models import City
+    from location.models import City, Area
 
     from business.models import Business
 
@@ -27,13 +27,18 @@ class Outlet(CreateUpdateModel):
                             null=True, blank=True)
     building = models.CharField(verbose_name=_("Building/Complex Name"),
                                 max_length=254)
-    area = models.CharField(verbose_name=_("Sector / Area"), max_length=254)
+    area = models.ForeignKey(to=Area, verbose_name=_("Area"),
+                             on_delete=models.PROTECT)
     pincode = models.CharField(verbose_name=_("Pincode"), max_length=6)
 
     is_active = models.BooleanField(verbose_name=_("Is Active?"),
                                     default=True)
     phone = models.CharField(verbose_name=_("Outlet Phone"), max_length=15,
                              null=True, blank=True)
+
+    serviceable_area = models.ManyToManyField(
+        verbose_name=_("Serviceable Areas"), to=Area, blank=True,
+        related_name="serviced_by_outlet")
 
     @property
     def is_instate(self):

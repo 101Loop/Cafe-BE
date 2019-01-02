@@ -3,7 +3,9 @@ from rest_framework.generics import ListAPIView, RetrieveAPIView
 
 class ListOutletView(ListAPIView):
     """
-    GET: Provides a list of all available outlets
+    List Outlets
+
+    Author: Himanshu Shankar (https://himanshus.com)
     """
 
     from rest_framework.permissions import AllowAny
@@ -16,7 +18,7 @@ class ListOutletView(ListAPIView):
 
     permission_classes = (AllowAny, )
     filter_backends = (DjangoFilterBackend, SearchFilter)
-    filter_fields = ('city__name', 'building', 'area', 'name', 'pincode',
+    filter_fields = ('city__name', 'building', 'area', 'pincode',
                      'unit', 'business', 'business__name', 'city')
     search_fields = ('city__name', 'building', 'area', 'name', 'pincode',
                      'unit', 'business__name')
@@ -35,6 +37,40 @@ class RetrieveOutletView(RetrieveAPIView):
     queryset = Outlet.objects.filter(is_active=True)
     serializer_class = OutletSerializer
     filter_backends = ()
+
+
+class ListOutletServiceableAreaView(ListAPIView):
+    """
+    Outlet Serviceable Areas
+
+    Author: Himanshu Shankar (https://himanshus.com)
+    """
+    from rest_framework.permissions import AllowAny
+    from rest_framework.filters import SearchFilter
+
+    from django_filters.rest_framework.backends import DjangoFilterBackend
+
+    from location.serializers import AreaSerializer
+
+    permission_classes = (AllowAny,)
+    filter_backends = (DjangoFilterBackend, SearchFilter)
+    search_fields = ('name',)
+
+    serializer_class = AreaSerializer
+
+    def get_queryset(self):
+        from rest_framework.exceptions import NotFound
+
+        from .models import Outlet
+
+        outlet_id = self.kwargs.get('outlet__id')
+        try:
+            outlet = Outlet.objects.get(pk=outlet_id, is_active=True)
+        except Outlet.DoesNotExist:
+            raise NotFound("Invalid Outlet ID {} - object does not "
+                           "exist.".format(outlet_id))
+        else:
+            return outlet.serviceable_area.all()
 
 
 class ListOutletProductView(ListAPIView):

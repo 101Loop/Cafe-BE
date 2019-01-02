@@ -11,6 +11,7 @@ CUSTOM_APPS = [
     'outlet',
     'business',
 
+    'transaction',
     'location',
     'currency',
     'taxation',
