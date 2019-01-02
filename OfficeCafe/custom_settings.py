@@ -7,6 +7,7 @@ CUSTOM_APPS = [
     'product',
     'lead',
 
+    'employee',
     'warehouse',
     'outlet',
     'business',

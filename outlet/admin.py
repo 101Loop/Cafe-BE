@@ -2,23 +2,27 @@ from django.contrib import admin
 
 from drfaddons.admin import CreateUpdateAdmin
 
-from .models import Outlet, OutletImage, OutletManager, OutletProduct
-from .models import OutletProcurement, OutletStock
+from .models import Outlet, OutletProduct, OutletStock
 
 
 class OutletProductInline(admin.StackedInline):
+    from .models import OutletProduct
+
     model = OutletProduct
     extra = 0
     fields = ('product', 'stock')
 
 
 class OutletManagerInline(admin.StackedInline):
+    from .models import OutletManager
     model = OutletManager
     extra = 0
     fields = ('manager', 'is_active')
 
 
 class OutletImageInline(admin.StackedInline):
+    from .models import OutletImage
+
     model = OutletImage
     extra = 0
     fields = ('name', 'image')
@@ -62,11 +66,12 @@ class OutletProductAdmin(CreateUpdateAdmin):
 
 
 class OutletAdmin(CreateUpdateAdmin):
-    list_display = ('id', 'name', 'city', 'area', 'pincode', 'products')
+    list_display = ('id', 'name', 'city', 'area', 'pincode', 'products',
+                    'orders')
     list_filter = ('city', 'area', 'pincode')
     search_fields = ('name', 'city', 'area', 'unit', 'building', 'pincode')
-    readonly_fields = ('products', )
-    inlines = (OutletManagerInline, OutletImageInline)
+    readonly_fields = ('products', 'orders')
+    inlines = (OutletManagerInline, OutletImageInline, )
 
     def products(self, obj):
         from django.urls import reverse
@@ -90,8 +95,32 @@ class OutletAdmin(CreateUpdateAdmin):
         return format_html(url)
     products.short_description = "Open Outlet Products"
 
+    def orders(self, obj):
+        from django.urls import reverse
+
+        from django.utils.html import format_html
+
+        count = obj.order_set.count()
+        if count > 1:
+            url = reverse("admin:order_order_changelist")
+            url = ('<a href="{url}?outlet__id__exact={oid}">Check {op} '
+                   'orders</a>'
+                   .format(url=url, op=count, oid=obj.id))
+        elif count == 1:
+            order = obj.order_set.first()
+            url = reverse("admin:order_order_change", args=(order, ))
+            url = '<a href="{url}">Open {prod}</a>'.format(url=url,
+                                                           prod=order.name)
+        else:
+            url = '0 Orders <a href="{}?outlet__id={}">(Add now)</a>'.format(
+                reverse("admin:order_order_add"), obj.id)
+        return format_html(url)
+    orders.short_description = "Orders"
+
 
 class OutletProcurementInline(admin.TabularInline):
+    from .models import OutletProcurement
+
     model = OutletProcurement
     extra = 0
 
@@ -102,4 +131,4 @@ class OutletStockAdmin(CreateUpdateAdmin):
 
 admin.site.register(Outlet, OutletAdmin)
 admin.site.register(OutletProduct, OutletProductAdmin)
-admin.site.register(OutletManager)
+admin.site.register(OutletStock, OutletStockAdmin)

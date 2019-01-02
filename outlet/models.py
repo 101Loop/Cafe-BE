@@ -136,53 +136,6 @@ class OutletProduct(CreateUpdateModel):
         verbose_name_plural = _("Outlet Products")
 
 
-class OutletCombo(CreateUpdateModel):
-    """
-    Represents combos in an outlet
-
-    Author: Himanshu Shankar (https://himanshus.com)
-    """
-
-    from product.models import ComboProduct
-
-    combo = models.ForeignKey(to=ComboProduct, on_delete=models.PROTECT,
-                              verbose_name=_("Combo Product"))
-    outlet = models.ForeignKey(to=Outlet, on_delete=models.PROTECT,
-                               verbose_name=_("Outlet"))
-
-    @property
-    def outlet_product(self):
-        return self.outlet.outletproduct_set.filter(
-            product__in=self.combo.combo_product.all())
-
-    def clean_fields(self, exclude=None):
-        """
-        Checks if products in combo are already added in Outlet or not
-        Parameters
-        ----------
-        exclude
-
-        Raises
-        -------
-        ValidationError
-        """
-
-        from django.core.exceptions import ValidationError
-        error = {}
-
-        op = set(self.outlet.outletproduct_set.values_list('product',
-                                                           flat=True))
-        cp = set(self.combo.combo_product.all())
-
-        if len(op-cp) is not 0:
-            error['combo'] = _("Cannot add combo {combo} to {outlet}. Not "
-                               "all combo's product present in "
-                               "outlet.".format(combo=self.combo.name,
-                                                outlet=self.outlet.name))
-            raise ValidationError(error)
-        return super(OutletCombo, self).clean_fields(exclude=exclude)
-
-
 class RawMaterialRequest(CreateUpdateModel):
     """
     Represents request for Raw Material in the system
@@ -211,7 +164,7 @@ class RawMaterialRequest(CreateUpdateModel):
                                              using=using,
                                              update_fields=update_fields)
 
-        # TODO: Check if OutletStock as this raw material
+        # TODO: Check if OutletStock has this raw material
         # TODO: Add an Outlet Procurement
 
     def __str__(self):

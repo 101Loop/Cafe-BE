@@ -1,3 +1,9 @@
 from django.contrib import admin
 
-# Register your models here.
+from drfaddons.admin import CreateUpdateAdmin
+
+from .models import Employee, EmployeeDocument
+
+
+admin.site.register(Employee, CreateUpdateAdmin)
+admin.site.register(EmployeeDocument, CreateUpdateAdmin)
