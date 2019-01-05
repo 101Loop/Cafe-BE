@@ -16,7 +16,8 @@ class Employee(CreateUpdateModel):
     user_id = models.OneToOneField(to=get_user_model(),
                                    on_delete=models.PROTECT,
                                    verbose_name=_("User Account"),
-                                   related_name="is_employee")
+                                   related_name="is_employee",
+                                   null=True, blank=True)
     designation = models.CharField(verbose_name=_("Designation"),
                                    max_length=10, null=True, blank=True)
 
