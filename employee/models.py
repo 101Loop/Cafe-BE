@@ -49,6 +49,7 @@ class EmployeeDocument(CreateUpdateModel):
 
     employee = models.ForeignKey(to=Employee, on_delete=models.PROTECT,
                                  verbose_name=_("Employee"))
+    doc = models.FileField(null=True, blank=True)
     doc_type = models.CharField(verbose_name=_("Document Type"), max_length=5,
                                 choices=EMPLOYEE_DOCUMENT_CHOICES)
     doc_value = models.CharField(verbose_name=_("Document ID"),

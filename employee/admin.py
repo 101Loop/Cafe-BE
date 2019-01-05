@@ -2,8 +2,18 @@ from django.contrib import admin
 
 from drfaddons.admin import CreateUpdateAdmin
 
-from .models import Employee, EmployeeDocument
+from .models import Employee
 
 
-admin.site.register(Employee, CreateUpdateAdmin)
-admin.site.register(EmployeeDocument, CreateUpdateAdmin)
+class EmployeeDocumentInline(admin.TabularInline):
+    from .models import EmployeeDocument
+
+    model = EmployeeDocument
+    extra = 0
+
+
+class EmployeeAdmin(CreateUpdateAdmin):
+    inlines = (EmployeeDocumentInline, )
+
+
+admin.site.register(Employee, EmployeeAdmin)
