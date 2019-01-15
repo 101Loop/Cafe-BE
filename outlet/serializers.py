@@ -46,3 +46,35 @@ class PublicOutletManagerSerializer(serializers.ModelSerializer):
         model = OutletManager
         fields = ('name', 'mobile', 'email')
         read_only_fields = fields
+
+
+class ManagerOutletStockSerializer(serializers.ModelSerializer):
+    class Meta:
+        from .models import OutletStock
+
+        model = OutletStock
+        fields = ('id', 'raw_material', 'quantity', 'create_date',
+                  'update_date', 'created_by')
+        read_only_fields = ('create_date', 'update_date', 'created_by')
+
+
+class ManagerOutletProcurementSerializer(serializers.ModelSerializer):
+    class Meta:
+        from .models import OutletProcurement
+
+        model = OutletProcurement
+        fields = ('id', 'stock', 'quantity', 'date', 'mfg_date', 'exp_date',
+                  'mfg_batch', 'other', 'created_by', 'create_date',
+                  'update_date')
+        read_only_fields = ('created_by', 'create_date', 'update_date')
+
+
+class ManagerOutletStockRequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        from .models import OutletStockRequest
+
+        model = OutletStockRequest
+        fields = ('id', 'batch_id', 'stock', 'quantity', 'fulfilled_on',
+                  'created_by', 'create_date', 'update_date')
+        read_only_fields = ('batch_id', 'created_by', 'create_date',
+                            'update_date')

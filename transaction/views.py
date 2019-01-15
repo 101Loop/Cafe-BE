@@ -90,6 +90,7 @@ class AcceptTransactionView(OwnerListCreateAPIView):
                     _("User doesn't have permission on provided outlet."))
 
         else:
+            # TODO: Default manager checklist
             manager = OutletManager.objects.filter(outlet=outlet).first()
             if not manager:
                 manager = OutletManager.objects.create(

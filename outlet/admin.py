@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from drfaddons.admin import CreateUpdateAdmin
 
-from .models import Outlet, OutletProduct, OutletStock
+from .models import Outlet, OutletProduct, OutletStock, OutletStockRequest
 
 
 class OutletProductInline(admin.StackedInline):
@@ -129,6 +129,13 @@ class OutletStockAdmin(CreateUpdateAdmin):
     inlines = (OutletProcurementInline, )
 
 
+class OutletStockRequestAdmin(CreateUpdateAdmin):
+    list_display = ('batch_id', 'stock', 'quantity', 'create_date',
+                    'fulfilled_on', 'created_by')
+    list_filter = ('batch_id', 'create_date', 'stock', 'created_by')
+
+
 admin.site.register(Outlet, OutletAdmin)
 admin.site.register(OutletProduct, OutletProductAdmin)
 admin.site.register(OutletStock, OutletStockAdmin)
+admin.site.register(OutletStockRequest, OutletStockRequestAdmin)

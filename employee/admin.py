@@ -10,6 +10,7 @@ class EmployeeDocumentInline(admin.TabularInline):
 
     model = EmployeeDocument
     extra = 0
+    fk_name = 'employee'
 
 
 class EmployeeAdmin(CreateUpdateAdmin):
