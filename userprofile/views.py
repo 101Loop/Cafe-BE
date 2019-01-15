@@ -4,11 +4,16 @@ from rest_framework.generics import ListAPIView
 
 
 class ListCategoryView(ListAPIView):
+    from rest_framework.permissions import AllowAny
+
     from .models import CategoryMaster
     from .serializers import CategoryMasterSerializer
 
     queryset = CategoryMaster.objects.all()
     serializer_class = CategoryMasterSerializer
+
+    permission_classes = (AllowAny, )
+    filter_backends = ()
 
 
 class UserProfileView(RetrieveUpdateByUserAPIView):

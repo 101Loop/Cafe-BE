@@ -77,7 +77,6 @@ REST_FRAMEWORK = {
         'drfaddons.filters.IsOwnerFilterBackend',
         'django_filters.rest_framework.DjangoFilterBackend'
     ),
-
 }
 
 
