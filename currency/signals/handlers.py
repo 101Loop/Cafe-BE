@@ -1,7 +1,11 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.contrib.auth import get_user_model
 
 from transaction.models import OrderPayment
+
+
+User = get_user_model()
 
 
 @receiver(post_save, sender=OrderPayment)
@@ -33,3 +37,25 @@ def add_points(instance: OrderPayment, created, **kwargs):
         OCPointTransaction.objects.create(created_by=instance.created_by,
                                           is_credit=instance.is_credit,
                                           value=value, payment=instance)
+
+
+@receiver(post_save, sender=User)
+def post_user_registration(instance: User, created, **kwargs):
+    """
+    Create new OCPoint Wallet for a new registered user
+    Parameters
+    ----------
+    instance: User
+    created: bool
+    kwargs: dict
+
+    Returns
+    -------
+    None
+
+    Author: Himanshu Shankar (https://himanshus.com)
+    """
+    from currency.models import OCPointWallet
+
+    if created:
+        OCPointWallet.objects.create(created_by=instance)

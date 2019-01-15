@@ -71,6 +71,12 @@ class UserProfile(CreateUpdateModel):
     designation = models.CharField(verbose_name=_("Designation"), null=True,
                                    blank=True, max_length=254)
 
+    @property
+    def wallet(self):
+        from currency.models import OCPointWallet
+
+        return OCPointWallet.objects.get(created_by_id=self.created_by.id)
+
     def __str__(self):
         return self.created_by.name
 
