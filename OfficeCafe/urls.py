@@ -49,6 +49,9 @@ urlpatterns = [
          name='schema-redoc'),
 
     path('api/users/', include('drf_user.urls')),
+    path('api/userprofile/', include('userprofile.urls',
+                                     namespace='userprofile')),
+
     path('api/instamojo/', include('drf_instamojo.urls')),
     path('api/outlet/', include('outlet.urls', namespace='outlet')),
     path('api/location/', include('location.urls', namespace='location')),
