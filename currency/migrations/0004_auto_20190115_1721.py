@@ -20,6 +20,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('currency', '0003_ocpointtransaction_payment'),
+        ('drf_user', '0002_user_is_staff'),
     ]
 
     operations = [
