@@ -10,16 +10,14 @@ class Employee(CreateUpdateModel):
 
     Author: Himanshu Shankar (https://himanshus.com)
     """
-    from django.contrib.auth import get_user_model
+    from business.models import Business
 
     name = models.CharField(verbose_name=_("Full Name"), max_length=254)
-    user_id = models.OneToOneField(to=get_user_model(),
-                                   on_delete=models.PROTECT,
-                                   verbose_name=_("User Account"),
-                                   related_name="is_employee",
-                                   null=True, blank=True)
     designation = models.CharField(verbose_name=_("Designation"),
                                    max_length=10, null=True, blank=True)
+
+    company = models.ForeignKey(to=Business, on_delete=models.PROTECT,
+                                default=1)
 
     is_active = models.BooleanField(verbose_name=_("Is Active?"),
                                     default=False)

@@ -41,6 +41,28 @@ class Outlet(CreateUpdateModel):
         related_name="serviced_by_outlet")
 
     @property
+    def full_address(self):
+        address = ''
+
+        if self.unit:
+            address += self.unit
+
+        if self.building:
+            address = address + ', ' + self.building
+
+        if self.area:
+            address = address + ', ' + self.area.name
+
+        if self.city:
+            address = (address + ', ' + self.city.name + ', '
+                       + self.city.state.name)
+
+        if self.pincode:
+            address = address + ' - ' + self.pincode
+
+        return address
+
+    @property
     def is_instate(self):
         return self.business.state.id == self.city.state.id
 

@@ -40,6 +40,10 @@ class Business(CreateUpdateModel):
     is_active = models.BooleanField(verbose_name=_("Is Active?"),
                                     default=True)
 
+    @property
+    def legal_name(self):
+        return self.name + self.get_business_type_display()
+
     def clean_fields(self, exclude=None):
         """
         Validates GST Number

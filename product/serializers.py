@@ -6,7 +6,7 @@ class CategorySerializer(serializers.ModelSerializer):
         from .models import Category
 
         model = Category
-        fields = ('id', 'name', 'hsn')
+        fields = ('id', 'name', 'hsn', 'create_date', 'update_date')
         read_only_fields = fields
 
 
@@ -17,5 +17,6 @@ class ProductSerializer(serializers.ModelSerializer):
         from .models import Product
 
         model = Product
-        fields = ('id', 'name', 'category', 'sku_code', 'hsn', 'uom__name')
+        fields = ('id', 'name', 'category', 'sku_code', 'hsn', 'uom__name',
+                  'create_date', 'update_date')
         read_only_fields = fields

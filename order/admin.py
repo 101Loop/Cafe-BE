@@ -5,6 +5,14 @@ from drfaddons.admin import CreateUpdateAdmin
 from .models import Order
 
 
+class DeliveryInline(admin.TabularInline):
+    from .models import Delivery
+
+    model = Delivery
+    extra = 0
+    exclude = ('created_by', )
+
+
 class SubOrderInline(admin.TabularInline):
     from .models import SubOrder
     model = SubOrder
@@ -19,7 +27,7 @@ class OrderAdmin(CreateUpdateAdmin):
                     'payment_done')
     list_filter = ('status', 'delivery_type', 'outlet', 'managed_by__manager')
     readonly_fields = ('total', 'payment_done')
-    inlines = (OrderPaymentInline, SubOrderInline)
+    inlines = (OrderPaymentInline, SubOrderInline, DeliveryInline)
 
     def get_changeform_initial_data(self, request):
         from outlet.models import Outlet

@@ -14,7 +14,7 @@ class OutletSerializer(serializers.ModelSerializer):
 
         model = Outlet
         fields = ('id', 'name', 'business', 'unit', 'building',
-                  'area', 'pincode', 'phone')
+                  'area', 'pincode', 'phone', 'full_address')
         read_only_fields = fields
 
 
