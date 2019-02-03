@@ -85,15 +85,15 @@ class OutletAdmin(CreateUpdateAdmin):
                    'products</a>'
                    .format(url=url, op=count, oid=obj.id))
         elif count == 1:
-            prod = obj.outletproduct_set.first()
-            url = reverse("admin:outlet_outletproduct_change", args=(prod, ))
-            url = '<a href="{url}">Open {prod}</a>'.format(url=url,
-                                                           prod=prod.name)
+            op = obj.outletproduct_set.first()
+            url = reverse("admin:outlet_outletproduct_change", args=(op, ))
+            url = '<a href="{url}">Open {prod}</a>'.format(
+                url=url, prod=op.product.name)
         else:
             url = '0 Products <a href="{}?outlet__id={}">(Add now)</a>'.format(
                 reverse("admin:outlet_outletproduct_add"), obj.id)
         return format_html(url)
-    products.short_description = "Open Outlet Products"
+    products.short_description = "Outlet Products"
 
     def orders(self, obj):
         from django.urls import reverse
