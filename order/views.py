@@ -69,10 +69,16 @@ class CreateManagerOrderView(ManagerOwnerMixin, CreateOrderView):
     serializer_class = ManagerOrderSerializer
 
     def perform_create(self, serializer):
+        from outlet.models import OutletManager
+
+        outlet_manager = OutletManager.objects.get(
+            manager_id=self.request.user.id,
+            outlet_id=serializer.validated_data['outlet'].id
+        )
         if not serializer.validated_data['created_by']:
             serializer.save(
                 created_by=self.request.user,
-                managed_by=self.request.user
+                managed_by=outlet_manager
             )
         else:
             serializer.save(managed_by=self.request.user)
