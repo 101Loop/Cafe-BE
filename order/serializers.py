@@ -111,6 +111,105 @@ class OrderSerializer(serializers.ModelSerializer):
                             'create_date', 'update_date', 'payment_done')
 
 
+class ManagerOrderSerializer(serializers.ModelSerializer):
+    """
+    Serializer for placing an order
+
+    Author: Himanshu Shankar (https://himanshus.com)
+    """
+
+    from outlet.serializers import PublicOutletManagerSerializer
+    from outlet.models import Outlet
+
+    suborder_set = SubOrderSerializer(many=True)
+    status = serializers.CharField(source='get_status_display', read_only=True)
+    managed_by = PublicOutletManagerSerializer(read_only=True, many=False)
+    outlet_id = serializers.PrimaryKeyRelatedField(
+        source='outlet', queryset=Outlet.objects.all(), write_only=True)
+    outlet = serializers.HyperlinkedRelatedField(
+        many=False, read_only=True, view_name='outlet:outlet-detail',
+        lookup_field='pk')
+    delivery = DeliverySerializer(many=False, default=None)
+
+    def validate_suborder_set(self, value):
+        if len(value) is 0:
+            raise serializers.ValidationError(_("Minimum 1 item required to "
+                                                "place an order."))
+        return value
+
+    def validate(self, attrs):
+        from OfficeCafe.variables import DELIVERED
+
+        from django.contrib.auth import get_user_model
+
+        User = get_user_model()
+        user = None
+
+        if not self.instance:
+            if 'email' in attrs.keys():
+                try:
+                    user = User.objects.get(email=attrs.get('email'))
+                except User.DoesNotExist:
+                    user = None
+
+            if 'mobile' in attrs.keys() and not User:
+                try:
+                    user = User.objects.get(email=attrs.get('email'))
+                except User.DoesNotExist:
+                    user = None
+
+            if user:
+                attrs['created_by'] = user
+            else:
+                attrs['created_by'] = None
+
+            if ('delivery_type' in attrs
+                    and attrs.get('delivery_type') == DELIVERED):
+                if 'delivery' not in attrs or not attrs.get('delivery'):
+                    raise serializers.ValidationError(
+                        _("Please provide delivery address."))
+                else:
+                    if (attrs.get('delivery').get('area') not in
+                            attrs.get('outlet').serviceable_area.all()):
+                        raise serializers.ValidationError(
+                            _("This outlet currently doesn't deliver in "
+                              "provided area."))
+
+        return attrs
+
+    def create(self, validated_data):
+        from .models import SubOrder, Delivery
+
+        suborder_set = validated_data.pop('suborder_set')
+        try:
+            delivery = validated_data.pop('delivery')
+        except KeyError:
+            delivery = None
+
+        instance = super(ManagerOrderSerializer, self).create(
+            validated_data=validated_data)
+        for so in suborder_set:
+            SubOrder.objects.create(order=instance,
+                                    created_by=instance.created_by,
+                                    **so)
+        if delivery:
+            Delivery.objects.create(created_by=instance.created_by,
+                                    order=instance,
+                                    **delivery)
+        return instance
+
+    class Meta:
+        from .models import Order
+
+        model = Order
+        fields = ('id', 'name', 'mobile', 'email', 'status', 'outlet_id',
+                  'preparation_time', 'suborder_set', 'total', 'outlet',
+                  'managed_by', 'create_date', 'update_date', 'delivery_type',
+                  'payment_done', 'delivery')
+        read_only_fields = ('status', 'preparation_time', 'total',
+                            'create_date', 'update_date', 'payment_done')
+
+
 class OrderListSerializer(serializers.ModelSerializer):
     outlet = serializers.HyperlinkedRelatedField(
         many=False, read_only=True, view_name='outlet:outlet-detail',

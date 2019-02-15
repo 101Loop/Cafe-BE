@@ -63,6 +63,21 @@ class ManagerOwnerMixin:
     queryset = Order.objects.all()
 
 
+class CreateManagerOrderView(ManagerOwnerMixin, CreateOrderView):
+    from .serializers import ManagerOrderSerializer
+
+    serializer_class = ManagerOrderSerializer
+
+    def perform_create(self, serializer):
+        if not serializer.validated_data['created_by']:
+            serializer.save(
+                created_by=self.request.user,
+                managed_by=self.request.user
+            )
+        else:
+            serializer.save(managed_by=self.request.user)
+
+
 class ListManagerOrderView(ManagerOwnerMixin, ListAPIView):
     """
     get: Lists orders for Manager
