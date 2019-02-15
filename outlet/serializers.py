@@ -18,6 +18,12 @@ class OutletSerializer(serializers.ModelSerializer):
         read_only_fields = fields
 
 
+class OutletTaxSerializer(serializers.Serializer):
+    tax_name = serializers.CharField(max_length=500)
+    tax_percentage = serializers.DecimalField(max_digits=10, decimal_places=3)
+    tax_value = serializers.DecimalField(max_digits=10, decimal_places=3)
+
+
 class OutletProductSerializer(serializers.ModelSerializer):
     from product.serializers import CategorySerializer
 
@@ -27,12 +33,14 @@ class OutletProductSerializer(serializers.ModelSerializer):
     sku_code = serializers.CharField(source='product.sku_code')
     hsn = serializers.CharField(source='product.hsn')
     uom = serializers.CharField(source='product.uom.name')
+    taxations = OutletTaxSerializer(many=True, allow_null=True)
 
     class Meta:
         from .models import OutletProduct
 
         model = OutletProduct
-        fields = ('id', 'name', 'category', 'sku_code', 'hsn', 'uom', 'mrp')
+        fields = ('id', 'name', 'category', 'sku_code', 'hsn', 'uom', 'mrp',
+                  'taxations')
 
 
 class PublicOutletManagerSerializer(serializers.ModelSerializer):

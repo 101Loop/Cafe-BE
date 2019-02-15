@@ -111,7 +111,7 @@ class Product(CreateUpdateModel):
         total = total.get('percentage__sum')
 
         if self.is_inclusive:
-            total = (self.price * (100+total))/100
+            total = self.price - (self.price / (1 + (total/100)))
         else:
             total = (total * self.price) / 100
         return round(total, 2)
@@ -132,7 +132,7 @@ class Product(CreateUpdateModel):
         total = total.get('percentage__sum')
 
         if self.is_inclusive:
-            total = (self.price * (100 + total)) / 100
+            total = self.price - (self.price / (1 + (total/100)))
         else:
             total = (total * self.price) / 100
         return round(total, 2)

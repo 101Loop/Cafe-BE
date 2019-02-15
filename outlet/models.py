@@ -137,16 +137,55 @@ class OutletProduct(CreateUpdateModel):
                                verbose_name=_("Outlet"))
     stock = models.DecimalField(verbose_name=_("Stock"), max_digits=10,
                                 decimal_places=2)
+    o_price = models.DecimalField(verbose_name=_("Price"), max_digits=10,
+                                  decimal_places=3, null=True, blank=True)
+
+    @property
+    def price(self):
+        return self.o_price or self.product.price
 
     @property
     def mrp(self):
         if self.product.is_inclusive:
-            return self.product.price
+            return self.price
         else:
             if self.outlet.is_instate:
-                return self.product.price + self.product.total_instate_tax
+                return self.price + self.product.total_instate_tax
             else:
-                return self.product.price + self.product.total_interstate_tax
+                return self.price + self.product.total_interstate_tax
+
+    @property
+    def taxations(self):
+        taxes = []
+
+        price = self.price
+
+        if self.outlet.is_instate:
+            for tax in self.product.instate_tax.all():
+                tax_repr = dict()
+                tax_repr['tax_name'] = tax.display_name
+                tax_repr['tax_percentage'] = tax.percentage
+                if self.product.is_inclusive:
+                    price = self.price - self.product.total_instate_tax
+                tax_repr['tax_value'] = (tax.percentage * price) / 100
+                taxes.append(tax_repr)
+            taxes.append({'tax_name': 'IGST', 'tax_percentage': 0,
+                          'tax_value': 0})
+        else:
+            for tax in self.product.interstate_tax.all():
+                tax_repr = dict()
+                tax_repr['tax_name'] = tax.display_name
+                tax_repr['tax_percentage'] = tax.percentage
+                if self.product.is_inclusive:
+                    price = self.price - self.product.total_interstate_tax
+                tax_repr['tax_value'] = (tax.percentage * price) / 100
+                taxes.append(tax_repr)
+            taxes.append({'tax_name': 'CGST', 'tax_percentage': 0,
+                          'tax_value': 0})
+            taxes.append({'tax_name': 'SGST', 'tax_percentage': 0,
+                          'tax_value': 0})
+
+        return taxes
 
     def __str__(self):
         return "{product} in {outlet}".format(product=self.product.name,
