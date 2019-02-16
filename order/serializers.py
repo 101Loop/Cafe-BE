@@ -205,9 +205,11 @@ class ManagerOrderSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'mobile', 'email', 'status', 'outlet_id',
                   'preparation_time', 'suborder_set', 'total', 'outlet',
                   'managed_by', 'create_date', 'update_date', 'delivery_type',
-                  'payment_done', 'delivery')
+                  'payment_done', 'delivery', 'order_date', 'order_number',
+                  'offline_order_number')
         read_only_fields = ('status', 'preparation_time', 'total',
-                            'create_date', 'update_date', 'payment_done')
+                            'create_date', 'update_date', 'payment_done',
+                            'offline_order_number')
 
 
 class OrderListSerializer(serializers.ModelSerializer):

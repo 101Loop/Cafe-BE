@@ -101,8 +101,8 @@ class ListManagerOrderView(ManagerOwnerMixin, ListAPIView):
                                                                      queryset)
 
         return queryset.filter(
-            Q(outlet__outletmanager__manager=self.request.user)
-            | Q(outlet__created_by=self.request.user)).distinct()
+            Q(outlet__outletmanager__manager=self.request.user) |
+            Q(outlet__created_by=self.request.user)).distinct()
 
 
 class RetrieveUpdateOrderView(ManagerOwnerMixin, RetrieveUpdateAPIView):

@@ -37,6 +37,11 @@ class Order(CreateUpdateModel):
     delivery_type = models.CharField(verbose_name=_("Delivery Type"),
                                      choices=DELIVERY_TYPE_CHOICES,
                                      max_length=5, default=PICKED_UP)
+    order_date = models.DateTimeField(verbose_name=_("Order Create Date"),
+                                      default=datetime.date.today)
+    order_number = models.PositiveSmallIntegerField(
+        verbose_name=_("Offline Order Number"), default=0
+    )
 
     @property
     def payment_done(self)->bool:
@@ -56,6 +61,13 @@ class Order(CreateUpdateModel):
         for so in self.suborder_set.all():
             total += so.sub_total
         return round(total, 2)
+
+    @property
+    def offline_order_number(self):
+        return '{0:0=4d}'.format(
+            self.outlet.id) + '{}'.format(
+            self.order_date.strftime('%Y%m%d')) + '{0:0=5d}'.format(
+            self.order_number)
 
     def __str__(self)->str:
         if self.name:
