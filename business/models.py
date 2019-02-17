@@ -42,7 +42,7 @@ class Business(CreateUpdateModel):
 
     @property
     def legal_name(self):
-        return self.name + self.get_business_type_display()
+        return self.name + ' ' + self.get_business_type_display()
 
     def clean_fields(self, exclude=None):
         """
@@ -69,8 +69,19 @@ class Business(CreateUpdateModel):
             raise ValidationError(error)
 
         return super(Business, self).clean_fields(exclude=exclude)
+
+    def is_owner(self, user):
+        if user.is_authenticated:
+            return user in self.owners or user.is_superuser
+        return False
+
+    def has_permission(self, user):
+        if user.is_authenticated:
+            return self.is_owner(user=user) or user in self.owners
+        return False
+
     def __str__(self):
-        return self.name
+        return self.legal_name
 
     class Meta:
         verbose_name = _("Business")
@@ -101,6 +112,12 @@ class BusinessDocument(CreateUpdateModel):
     def __str__(self):
         return "{business}'s {doc}".format(business=self.business.name,
                                            doc=self.get_doc_type_display())
+
+    def is_owner(self, user):
+        return self.business.has_permission(user=user)
+
+    def has_permission(self, user):
+        return self.business.has_permission(user=user)
 
     class Meta:
         verbose_name = _("Business Document")
