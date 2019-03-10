@@ -19,21 +19,7 @@ class BusinessMixin:
     search_fields = ('name', 'gst', 'pan')
 
 
-class ListCreateBusinessView(BusinessMixin,
-                             generics.OwnerListCreateAPIView):
-    pass
+class ListBusinessView(BusinessMixin, generics.OwnerListAPIView):
+    from drfaddons.permissions import IsAuthenticatedWithPermission
 
-
-class RetrieveUpdateBusinessView(BusinessMixin,
-                                 generics.OwnerRetrieveUpdateAPIView):
-    pass
-
-
-class ListCreateBusinessDocumentView(generics.OwnerListCreateAPIView):
-    from .models import BusinessDocument
-
-    queryset = BusinessDocument.objects.all()
-
-    def get_queryset(self):
-        qs = super(ListCreateBusinessDocumentView, self).get_queryset()
-
+    permission_classes = (IsAuthenticatedWithPermission, )

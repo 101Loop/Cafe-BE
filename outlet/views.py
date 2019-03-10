@@ -1,5 +1,7 @@
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 
+from drfaddons import generics
+
 
 class ListOutletView(ListAPIView):
     """
@@ -178,3 +180,11 @@ class ListManagerOutletView(ListAPIView):
 
         return queryset.filter(Q(outletmanager__manager=self.request.user)
                                | Q(created_by=self.request.user)).distinct()
+
+
+class ListOwnerOutletView(generics.OwnerListAPIView):
+    from .serializers import OutletSerializer
+    from .models import Outlet
+
+    queryset = Outlet.objects.all()
+    serializer_class = OutletSerializer

@@ -66,6 +66,13 @@ class Outlet(CreateUpdateModel):
     def is_instate(self):
         return self.business.state.id == self.city.state.id
 
+    def is_owner(self, user):
+        return (user is self.created_by) or (self.business.is_owner(user))
+
+    def has_permission(self, user):
+        return (user is self.created_by) or (self.business.has_permission(
+            user))
+
     def __str__(self):
         return self.name
 
