@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.text import gettext_lazy as _
+from django.utils import timezone
 
 from drfaddons.models import CreateUpdateModel
 
@@ -38,13 +39,13 @@ class Order(CreateUpdateModel):
                                      choices=DELIVERY_TYPE_CHOICES,
                                      max_length=5, default=PICKED_UP)
     order_date = models.DateTimeField(verbose_name=_("Order Create Date"),
-                                      default=datetime.date.today)
+                                      default=timezone.now())
     order_number = models.PositiveSmallIntegerField(
         verbose_name=_("Offline Order Number"), default=0
     )
 
     @property
-    def payment_done(self)->bool:
+    def payment_done(self) -> bool:
         from django.db.models.aggregates import Sum
 
         payments = self.orderpayment_set.filter(is_credit=True).aggregate(
