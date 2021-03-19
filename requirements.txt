@@ -8,7 +8,7 @@ django-cors-headers==2.4.0
 django-filter==2.0.0
 django-jet==1.0.8
 django-sendsms==0.3.1
-djangorestframework==3.9.1
+djangorestframework==3.11.2
 djangorestframework-jwt==1.11.0
 drf-instamojo==0.0.1
 drf-paytm==0.0.2
