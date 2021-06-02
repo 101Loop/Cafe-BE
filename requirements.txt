@@ -37,5 +37,5 @@ six==1.12.0
 strict-rfc3339==0.7
 swagger-spec-validator==2.4.1
 uritemplate==3.0.0
-urllib3==1.24.1
+urllib3==1.26.5
 validate-email==1.3
